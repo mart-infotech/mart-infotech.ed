@@ -1,0 +1,4 @@
+
+User-agent: *
+Allow: /
+Sitemap: https://mart-infotech.github.io/mart-infotech.ed/sitemap.xml
