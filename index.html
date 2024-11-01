@@ -644,7 +644,7 @@
 })();
 </script>
 <script>
- document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function() {
     // Contact Form Handling
     var form = document.getElementById('contact-form');
     var submitButton = form.querySelector('button[type="submit"]');
@@ -735,39 +735,40 @@
         });
     }
 
-    // Fetch notifications from JSON file
-    async function fetchNotifications() {
-        try {
-            const response = await fetch('https://mart-infotech.github.io/mart-infotech.ed/notifications.json');
-            if (!response.ok) {
-                throw new Error('No notifications found');
-            }
-            const data = await response.json();
-            return data.notifications || [];
-        } catch (error) {
-            console.log('Error fetching notifications:', error);
-            return [];
-        }
+    // Style for the footer newsletter section
+    const footerNewsletter = document.querySelector('.footer-newsletter');
+    if (footerNewsletter) {
+        footerNewsletter.style.display = 'flex';
+        footerNewsletter.style.flexDirection = 'column';
+        footerNewsletter.style.gap = '1rem';
     }
 
-    // Display notifications
-    async function displayNotifications() {
-        const notificationsContainer = document.getElementById('notifications-container');
-        if (!notificationsContainer) return;
+    // Remove extra spans
+    const extraSpans = document.querySelectorAll('.footer-newsletter span');
+    extraSpans.forEach(span => {
+        if (!span.textContent.trim()) {
+            span.remove();
+        }
+    });
 
-        const notifications = await fetchNotifications();
-        
+    // Notification System
+    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+    const notificationsContainer = document.getElementById('notifications-container');
+    
+    if (notificationsContainer) {
+        // Add margin to create space between admin button and notifications
         notificationsContainer.style.marginTop = '2rem';
         
         if (notifications.length > 0) {
             const notificationList = document.createElement('div');
             notificationList.className = 'notification-list';
-            notificationList.style.maxHeight = '300px';
+            notificationList.style.maxHeight = '300px'; // Increased height
             notificationList.style.overflowY = 'auto';
             notificationList.style.border = '1px solid #dee2e6';
             notificationList.style.borderRadius = '0.25rem';
             notificationList.style.backgroundColor = '#ffffff';
             
+            // Add a heading for notifications
             const notificationHeading = document.createElement('div');
             notificationHeading.className = 'notification-heading p-2 border-bottom';
             notificationHeading.style.backgroundColor = '#f8f9fa';
@@ -785,6 +786,7 @@
                     <small class="text-muted">Click to view details</small>
                 `;
                 
+                // Hover effect
                 notificationItem.addEventListener('mouseenter', () => {
                     notificationItem.style.backgroundColor = '#f8f9fa';
                 });
@@ -793,6 +795,7 @@
                     notificationItem.style.backgroundColor = '#ffffff';
                 });
                 
+                // Click handler to show detailed dialog
                 notificationItem.addEventListener('click', () => {
                     showNotificationDialog(notification);
                 });
@@ -811,9 +814,6 @@
             notificationsContainer.appendChild(emptyState);
         }
     }
-
-    // Initialize notifications display
-    displayNotifications();
 });
 
 // Notification Dialog Function
@@ -865,6 +865,19 @@ function showNotificationDialog(notification) {
 
     overlay.appendChild(dialog);
     document.body.appendChild(overlay);
+
+    // Add animation styles if not already present
+    if (!document.querySelector('#notification-animations')) {
+        const style = document.createElement('style');
+        style.id = 'notification-animations';
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(-20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
 }
 
 // Admin Functions
@@ -874,126 +887,58 @@ function logout() {
 }
 
 function manageNotifications() {
-    fetchNotifications().then(notifications => {
-        const container = document.createElement('div');
-        container.style.position = 'fixed';
-        container.style.top = '50%';
-        container.style.left = '50%';
-        container.style.transform = 'translate(-50%, -50%)';
-        container.style.backgroundColor = 'white';
-        container.style.padding = '20px';
-        container.style.boxShadow = '0 0 10px rgba(0,0,0,0.1)';
-        container.style.maxHeight = '80vh';
-        container.style.overflow = 'auto';
-        container.style.zIndex = '1001';
-        container.style.width = '80%';
-        container.style.maxWidth = '600px';
-        container.style.borderRadius = '0.25rem';
+    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+    const container = document.createElement('div');
+    container.style.position = 'fixed';
+    container.style.top = '50%';
+    container.style.left = '50%';
+    container.style.transform = 'translate(-50%, -50%)';
+    container.style.backgroundColor = 'white';
+    container.style.padding = '20px';
+    container.style.boxShadow = '0 0 10px rgba(0,0,0,0.1)';
+    container.style.maxHeight = '80vh';
+    container.style.overflow = 'auto';
+    container.style.zIndex = '1001';
+    container.style.width = '80%';
+    container.style.maxWidth = '600px';
+    container.style.borderRadius = '0.25rem';
 
-        let html = `
-            <h3>Manage Notifications</h3>
-            <div style="max-height: 60vh; overflow-y: auto;">
-            <form id="add-notification-form" class="mb-4">
-                <h4>Add New Notification</h4>
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Title" required name="title">
+    let html = `
+        <h3>Manage Notifications</h3>
+        <div style="max-height: 60vh; overflow-y: auto;">
+    `;
+    
+    if (notifications.length === 0) {
+        html += '<p>No notifications found.</p>';
+    } else {
+        notifications.forEach((notification, index) => {
+            html += `
+                <div style="border-bottom: 1px solid #dee2e6; padding: 10px; margin-bottom: 10px;">
+                    <h4>${notification.title}</h4>
+                    <p>${notification.description}</p>
+                    <button class="btn btn-danger btn-sm" onclick="deleteNotification(${index})">Delete</button>
                 </div>
-                <div class="mb-3">
-                    <textarea class="form-control" placeholder="Description" required name="description"></textarea>
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Link (optional)" name="link">
-                </div>
-                <button type="submit" class="btn btn-primary">Add Notification</button>
-            </form>
-        `;
-        
-        if (notifications.length === 0) {
-            html += '<p>No notifications found.</p>';
-        } else {
-            notifications.forEach((notification, index) => {
-                html += `
-                    <div style="border-bottom: 1px solid #dee2e6; padding: 10px; margin-bottom: 10px;">
-                        <h4>${notification.title}</h4>
-                        <p>${notification.description}</p>
-                        <p class="text-muted">Link: ${notification.link}</p>
-                        <button class="btn btn-danger btn-sm delete-notification" data-index="${index}">Delete</button>
-                    </div>
-                `;
-            });
-        }
-        
-        html += `
-            </div>
-            <button class="btn btn-secondary mt-3" onclick="this.parentElement.remove()">Close</button>
-        `;
-
-        container.innerHTML = html;
-        document.body.appendChild(container);
-
-        // Handle form submission
-        const form = container.querySelector('#add-notification-form');
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(form);
-            const newNotification = {
-                title: formData.get('title'),
-                description: formData.get('description'),
-                link: formData.get('link') || '#',
-                date: new Date().toISOString()
-            };
-
-            alert('Please update the notifications.json file in your GitHub repository with this notification:\n\n' + 
-                  JSON.stringify(newNotification, null, 2));
-            
-            container.remove();
-            window.location.reload();
+            `;
         });
+    }
+    
+    html += `
+        </div>
+        <button class="btn btn-secondary mt-3" onclick="this.parentElement.remove()">Close</button>
+    `;
 
-        // Handle notification deletion
-        const deleteButtons = container.querySelectorAll('.delete-notification');
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', async () => {
-                const index = button.dataset.index;
-                if (confirm('Are you sure you want to delete this notification?')) {
-                    alert('Please remove this notification from your notifications.json file in the GitHub repository.');
-                    container.remove();
-                    window.location.reload();
-                }
-            });
-        });
-    });
+    container.innerHTML = html;
+    document.body.appendChild(container);
 }
 
-// Add mobile-specific styles
-const mobileStyles = document.createElement('style');
-mobileStyles.textContent = `
-    @media (max-width: 768px) {
-        .notification-list {
-            margin: 0 -15px;
-            border-radius: 0;
-        }
-        
-        .notification-dialog {
-            width: 95% !important;
-            margin: 10px !important;
-        }
-        
-        .notification-item {
-            padding: 15px !important;
-        }
-        
-        #notifications-container {
-            margin-top: 1rem !important;
-        }
+function deleteNotification(index) {
+    if (confirm('Are you sure you want to delete this notification?')) {
+        const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+        notifications.splice(index, 1);
+        localStorage.setItem('notifications', JSON.stringify(notifications));
+        window.location.reload();
     }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-`;
-document.head.appendChild(mobileStyles);
+}
   </script>
 </body>
 </html>
