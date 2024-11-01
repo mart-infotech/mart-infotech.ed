@@ -7,9 +7,7 @@
   <title>Index -Mart Computers Nesswo</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
- <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-analytics.js"></script>
+
   <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
@@ -643,7 +641,6 @@
   
 
 
-
 <!-- Main JS File -->
 <script src="assets/js/main.js"></script>
 <!-- Add this near the bottom of your HTML file, just before the closing </body> tag -->
@@ -654,311 +651,249 @@
 })();
 </script>
 <script>
-  <script>
-  // Firebase Configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyDB7rpxTE3NmHn_cPLXQFvp2YXUMBMZthU",
-    authDomain: "martinfotech-a07fb.firebaseapp.com",
-    projectId: "martinfotech-a07fb",
-    storageBucket: "martinfotech-a07fb.firebasestorage.app",
-    messagingSenderId: "103629955504",
-    appId: "1:103629955504:web:8a192c32ca09b8c32f3675",
-    measurementId: "G-PY0XSE5WBJ"
-  };
+  document.addEventListener('DOMContentLoaded', function() {
+    // Contact Form Handling
+    var form = document.getElementById('contact-form');
+    var submitButton = form.querySelector('button[type="submit"]');
+    var loading = form.querySelector('.loading');
+    var errorMessage = form.querySelector('.error-message');
+    var sentMessage = form.querySelector('.sent-message');
+    
+    function validateForm() {
+        var inputs = form.querySelectorAll('input[required], textarea[required]');
+        var isValid = true;
+        inputs.forEach(function(input) {
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add('is-invalid');
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+        return isValid;
+    }
+    
+    function sendEmail(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!validateForm()) {
+            errorMessage.textContent = 'Please fill in all required fields.';
+            errorMessage.style.display = 'block';
+            return false;
+        }
+        loading.style.display = 'block';
+        errorMessage.style.display = 'none';
+        sentMessage.style.display = 'none';
+        emailjs.sendForm('service_ct960cy', 'template_lg2sv5q', form)
+            .then(function() {
+                loading.style.display = 'none';
+                sentMessage.style.display = 'block';
+                form.reset();
+            }, function(error) {
+                loading.style.display = 'none';
+                errorMessage.textContent = 'Oops! ' + error.text;
+                errorMessage.style.display = 'block';
+            });
+        return false;
+    }
+    
+    // Form event listeners
+    if (form) {
+        form.addEventListener('submit', sendEmail);
+        submitButton.addEventListener('click', sendEmail);
+    }
+    
+    // WhatsApp functionality
+    const whatsappLink = document.getElementById('whatsapp-link');
+    if (whatsappLink) {
+        whatsappLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            const phoneNumber = "9419503369";
+            const businessName = "Mart Infotech Computers(Proxy Computers)";
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=Hi ${encodeURIComponent(businessName)}`;
+            window.open(whatsappUrl, '_blank');
+        });
+    }
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app); // Initialize Realtime Database
+    // Admin System
+    const isAdmin = localStorage.getItem('adminLoggedIn') === 'true';
+    
+    // Show/hide appropriate buttons
+    const adminButtonsContainer = document.getElementById('adminButtonsContainer');
+    const regularButtonContainer = document.getElementById('regularButtonContainer');
+    
+    if (adminButtonsContainer && regularButtonContainer) {
+        if (isAdmin) {
+            adminButtonsContainer.style.display = 'flex';
+            regularButtonContainer.style.display = 'none';
+        } else {
+            adminButtonsContainer.style.display = 'none';
+            regularButtonContainer.style.display = 'block';
+        }
+    }
 
-  // Contact Form Handling
-  var form = document.getElementById('contact-form');
-  var submitButton = form.querySelector('button[type="submit"]');
-  var loading = form.querySelector('.loading');
-  var errorMessage = form.querySelector('.error-message');
-  var sentMessage = form.querySelector('.sent-message');
-  
-  function validateForm() {
-      var inputs = form.querySelectorAll('input[required], textarea[required]');
-      var isValid = true;
-      inputs.forEach(function(input) {
-          if (!input.value.trim()) {
-              isValid = false;
-              input.classList.add('is-invalid');
-          } else {
-              input.classList.remove('is-invalid');
-          }
-      });
-      return isValid;
-  }
-  
-  function sendEmail(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (!validateForm()) {
-          errorMessage.textContent = 'Please fill in all required fields.';
-          errorMessage.style.display = 'block';
-          return false;
-      }
-      loading.style.display = 'block';
-      errorMessage.style.display = 'none';
-      sentMessage.style.display = 'none';
-      emailjs.sendForm('service_ct960cy', 'template_lg2sv5q', form)
-         .then(function() {
-              loading.style.display = 'none';
-              sentMessage.style.display = 'block';
-              form.reset();
-          }, function(error) {
-              loading.style.display = 'none';
-              errorMessage.textContent = 'Oops! ' error.text;
-              errorMessage.style.display = 'block';
-          });
-      return false;
-  }
-  
-  // Form event listeners
-  if (form) {
-      form.addEventListener('submit', sendEmail);
-      submitButton.addEventListener('click', sendEmail);
-  }
-  
-  // WhatsApp functionality
-  const whatsappLink = document.getElementById('whatsapp-link');
-  if (whatsappLink) {
-      whatsappLink.addEventListener('click', function(e) {
-          e.preventDefault();
-          const phoneNumber = "9419503369";
-          const businessName = "Mart Infotech Computers(Proxy Computers)";
-          const whatsappUrl = `https://wa.me/${phoneNumber}?text=Hi ${encodeURIComponent(businessName)}`;
-          window.open(whatsappUrl, '_blank');
-      });
-  }
+    // Mobile menu toggle for admin buttons
+    const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+    if (mobileNavToggle) {
+        mobileNavToggle.addEventListener('click', function() {
+            if (isAdmin && adminButtonsContainer) {
+                adminButtonsContainer.classList.toggle('show');
+            }
+        });
+    }
 
-  // Admin System
-  const isAdmin = localStorage.getItem('adminLoggedIn') === 'true';
-  
-  // Show/hide appropriate buttons
-  const adminButtonsContainer = document.getElementById('adminButtonsContainer');
-  const regularButtonContainer = document.getElementById('regularButtonContainer');
-  
-  if (adminButtonsContainer && regularButtonContainer) {
-      if (isAdmin) {
-          adminButtonsContainer.style.display = 'flex';
-          regularButtonContainer.style.display = 'none';
-      } else {
-          adminButtonsContainer.style.display = 'none';
-          regularButtonContainer.style.display = 'block';
-      }
-  }
+    // Style for the footer newsletter section
+    const footerNewsletter = document.querySelector('.footer-newsletter');
+    if (footerNewsletter) {
+        footerNewsletter.style.display = 'flex';
+        footerNewsletter.style.flexDirection = 'column';
+        footerNewsletter.style.gap = '1rem';
+    }
 
-  // Mobile menu toggle for admin buttons
-  const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
-  if (mobileNavToggle) {
-      mobileNavToggle.addEventListener('click', function() {
-          if (isAdmin && adminButtonsContainer) {
-              adminButtonsContainer.classList.toggle('show');
-          }
-      });
-  }
+    // Remove extra spans
+    const extraSpans = document.querySelectorAll('.footer-newsletter span');
+    extraSpans.forEach(span => {
+        if (!span.textContent.trim()) {
+            span.remove();
+        }
+    });
 
-  // Style for the footer newsletter section
-  const footerNewsletter = document.querySelector('.footer-newsletter');
-  if (footerNewsletter) {
-      footerNewsletter.style.display = 'flex';
-      footerNewsletter.style.flexDirection = 'column';
-      footerNewsletter.style.gap = '1rem';
-  }
+    // Notification System
+    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+    const notificationsContainer = document.getElementById('notifications-container');
+    
+    if (notificationsContainer) {
+        // Add margin to create space between admin button and notifications
+        notificationsContainer.style.marginTop = '2rem';
+        
+        if (notifications.length > 0) {
+            const notificationList = document.createElement('div');
+            notificationList.className = 'notification-list';
+            notificationList.style.maxHeight = '300px'; // Increased height
+            notificationList.style.overflowY = 'auto';
+            notificationList.style.border = '1px solid #dee2e6';
+            notificationList.style.borderRadius = '0.25rem';
+            notificationList.style.backgroundColor = '#ffffff';
+            
+            // Add a heading for notifications
+            const notificationHeading = document.createElement('div');
+            notificationHeading.className = 'notification-heading p-2 border-bottom';
+            notificationHeading.style.backgroundColor = '#f8f9fa';
+            notificationHeading.innerHTML = '<h5 class="mb-0">Latest Updates</h5>';
+            notificationList.appendChild(notificationHeading);
+            
+            notifications.forEach((notification, index) => {
+                const notificationItem = document.createElement('div');
+                notificationItem.className = 'notification-item p-3 border-bottom';
+                notificationItem.style.cursor = 'pointer';
+                notificationItem.style.transition = 'background-color 0.3s';
+                notificationItem.style.backgroundColor = '#ffffff';
+                notificationItem.innerHTML = `
+                    <h6 class="mb-1 text-primary">${notification.title}</h6>
+                    <small class="text-muted">Click to view details</small>
+                `;
+                
+                // Hover effect
+                notificationItem.addEventListener('mouseenter', () => {
+                    notificationItem.style.backgroundColor = '#f8f9fa';
+                });
+                
+                notificationItem.addEventListener('mouseleave', () => {
+                    notificationItem.style.backgroundColor = '#ffffff';
+                });
+                
+                // Click handler to show detailed dialog
+                notificationItem.addEventListener('click', () => {
+                    showNotificationDialog(notification);
+                });
+                
+                notificationList.appendChild(notificationItem);
+            });
+            
+            notificationsContainer.appendChild(notificationList);
+        } else {
+            const emptyState = document.createElement('div');
+            emptyState.className = 'text-center p-3 bg-light rounded';
+            emptyState.style.marginTop = '1rem';
+            emptyState.innerHTML = `
+                <p class="text-muted mb-0">No notifications available</p>
+            `;
+            notificationsContainer.appendChild(emptyState);
+        }
+    }
+});
 
-  // Remove extra spans
-  const extraSpans = document.querySelectorAll('.footer-newsletter span');
-  extraSpans.forEach(span => {
-      if (!span.textContent.trim()) {
-          span.remove();
-      }
-  });
+// Notification Dialog Function
+function showNotificationDialog(notification) {
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    overlay.style.display = 'flex';
+    overlay.style.justifyContent = 'center';
+    overlay.style.alignItems = 'center';
+    overlay.style.zIndex = '1000';
 
-  // Notification System (Integrated with Firebase Realtime Database)
-  const notificationsContainer = document.getElementById('notifications-container');
-  
-  // Fetch and Display Notifications in Real-time
-  const notificationsRef = db.ref('notifications');
-  notificationsRef.on('value', (snapshot) => {
-      notificationsContainer.innerHTML = '';
-      snapshot.forEach((childSnapshot) => {
-          const notification = childSnapshot.val();
-          const notificationItem = document.createElement('div');
-          notificationItem.className = 'notification-item p-3 border-bottom';
-          notificationItem.style.cursor = 'pointer';
-          notificationItem.style.transition = 'background-color 0.3s';
-          notificationItem.style.backgroundColor = '#ffffff';
-          notificationItem.innerHTML = 
-              `<h6 class="mb-1 text-primary">${notification.title}</h6>
-               <small class="text-muted">Click to view details</small>
-              `;
-          
-          // Hover effect
-          notificationItem.addEventListener('mouseenter', () => {
-              notificationItem.style.backgroundColor = '#f8f9fa';
-          });
-          
-          notificationItem.addEventListener('mouseleave', () => {
-              notificationItem.style.backgroundColor = '#ffffff';
-          });
-          
-          // Click handler to show detailed dialog
-          notificationItem.addEventListener('click', () => {
-              showNotificationDialog(notification);
-          });
-          
-          notificationsContainer.appendChild(notificationItem);
-      });
-  });
+    const dialog = document.createElement('div');
+    dialog.className = 'notification-dialog bg-white rounded p-4';
+    dialog.style.width = '90%';
+    dialog.style.maxWidth = '500px';
+    dialog.style.maxHeight = '80vh';
+    dialog.style.overflowY = 'auto';
+    dialog.style.position = 'relative';
+    dialog.style.animation = 'fadeIn 0.3s';
 
-  // Manage Notifications (Updated to use Firebase Realtime Database)
-  function manageNotifications() {
-      const notificationsRef = db.ref('notifications');
-      const container = document.createElement('div');
-      container.style.position = 'fixed';
-      container.style.top = '50%';
-      container.style.left = '50%';
-      container.style.transform = 'translate(-50%, -50%)';
-      container.style.backgroundColor = 'white';
-      container.style.padding = '20px';
-      container.style.boxShadow = '0 0 10px rgba(0,0,0,0.1)';
-      container.style.maxHeight = '80vh';
-      container.style.overflow = 'auto';
-      container.style.zIndex = '1001';
-      container.style.width = '80%';
-      container.style.maxWidth = '600px';
-      container.style.borderRadius = '0.25rem';
+    dialog.innerHTML = `
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <h4 class="text-primary mb-0">${notification.title}</h4>
+            <button type="button" class="btn-close" aria-label="Close"></button>
+        </div>
+        <div class="notification-content">
+            <p>${notification.description}</p>
+            ${notification.link !== '#' ? 
+                `<a href="${notification.link}" class="btn btn-primary btn-sm">Learn More</a>` : 
+                ''}
+        </div>
+    `;
 
-      let html = 
-          `<h3>Manage Notifications</h3>
-           <div style="max-height: 60vh; overflow-y: auto;">
-      `;
-      
-      // Fetch notifications from Firebase Realtime Database
-      notificationsRef.once('value', (snapshot) => {
-          if (snapshot.exists()) {
-              snapshot.forEach((childSnapshot) => {
-                  const notification = childSnapshot.val();
-                  html += 
-                      `<div style="border-bottom: 1px solid #dee2e6; padding: 10px; margin-bottom: 10px;">
-                          <h4>${notification.title}</h4>
-                          <p>${notification.description}</p>
-                          <button class="btn btn-danger btn-sm" onclick="deleteNotification('${childSnapshot.key}')">Delete</button>
-                      </div>
-                  `;
-              });
-          } else {
-              html += '<p>No notifications found.</p>';
-          }
-          
-          html += 
-              `</div>
-               <div>
-                  <input id="notification-title" type="text" placeholder="Title">
-                  <textarea id="notification-description" placeholder="Description"></textarea>
-                  <button onclick="addNotification()">Add Notification</button>
-               </div>
-               <button class="btn btn-secondary mt-3" onclick="this.parentElement.remove()">Close</button>
-          `;
-          
-          container.innerHTML = html;
-          document.body.appendChild(container);
-      });
-  }
+    const closeButton = dialog.querySelector('.btn-close');
+    closeButton.addEventListener('click', () => {
+        overlay.remove();
+    });
 
-  // Add Notification to Firebase Realtime Database
-  function addNotification() {
-      const title = document.getElementById('notification-title').value;
-      const description = document.getElementById('notification-description').value;
-      const notificationsRef = db.ref('notifications');
-      notificationsRef.push({
-          title: title,
-          description: description
-      });
-      document.getElementById('notification-title').value = '';
-      document.getElementById('notification-description').value = '';
-  }
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            overlay.remove();
+        }
+    });
 
-  // Delete Notification from Firebase Realtime Database
-  function deleteNotification(key) {
-      if (confirm('Are you sure you want to delete this notification?')) {
-          const notificationsRef = db.ref('notifications');
-          notificationsRef.child(key).remove();
-      }
-  }
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
 
-  // Notification Dialog Function (Remains unchanged)
-  function showNotificationDialog(notification) {
-      const overlay = document.createElement('div');
-      overlay.style.position = 'fixed';
-      overlay.style.top = '0';
-      overlay.style.left = '0';
-      overlay.style.width = '100%';
-      overlay.style.height = '100%';
-      overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-      overlay.style.display = 'flex';
-      overlay.style.justifyContent = 'center';
-      overlay.style.alignItems = 'center';
-      overlay.style.zIndex = '1000';
+    // Add animation styles if not already present
+    if (!document.querySelector('#notification-animations')) {
+        const style = document.createElement('style');
+        style.id = 'notification-animations';
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(-20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
 
-     const dialog = document.createElement('div');
-  dialog.className = 'notification-dialog bg-white rounded p-4';
-  dialog.style.width = '90%';
-  dialog.style.maxWidth = '500px';
-  dialog.style.maxHeight = '80vh';
-  dialog.style.overflowY = 'auto';
-  dialog.style.position = 'elative';
-  dialog.style.animation = 'fadeIn 0.3s';
+// Admin Functions
+function logout() {
+    localStorage.removeItem('adminLoggedIn');
+    window.location.reload();
+}
 
-  dialog.innerHTML = 
-      `<div class="d-flex justify-content-between align-items-start mb-3">
-          <h4 class="text-primary mb-0">${notification.title}</h4>
-          <button type="button" class="btn-close" aria-label="Close"></button>
-      </div>
-      <div class="notification-content">
-          <p>${notification.description}</p>
-          ${notification.link!== '#'? 
-              `<a href="${notification.link}" class="btn btn-primary btn-sm">Learn More</a>` : 
-              ''}
-      </div>
-  `;
-
-  const closeButton = dialog.querySelector('.btn-close');
-  closeButton.addEventListener('click', () => {
-      overlay.remove();
-  });
-
-  overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) {
-          overlay.remove();
-      }
-  });
-
-  overlay.appendChild(dialog);
-  document.body.appendChild(overlay);
-
-  // Add animation styles if not already present
-  if (!document.querySelector('#notification-animations')) {
-      const style = document.createElement('style');
-      style.id = 'notification-animations';
-      style.textContent = 
-          `@keyframes fadeIn {
-              from { opacity: 0; transform: translateY(-20px); }
-              to { opacity: 1; transform: translateY(0); }
-          }
-      `;
-      document.head.appendChild(style);
-  }
-
-  // Admin Functions (Remain the same)
-  function logout() {
-      localStorage.removeItem('adminLoggedIn');
-      window.location.reload();
-  }
-
- function manageNotifications() {
+function manageNotifications() {
     const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
     const container = document.createElement('div');
     container.style.position = 'fixed';
@@ -1003,12 +938,14 @@
     document.body.appendChild(container);
 }
 
-  function deleteNotification(key) {
-      if (confirm('Are you sure you want to delete this notification?')) {
-          const notificationsRef = db.ref('notifications');
-          notificationsRef.child(key).remove();
-      }
-  }
+function deleteNotification(index) {
+    if (confirm('Are you sure you want to delete this notification?')) {
+        const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+        notifications.splice(index, 1);
+        localStorage.setItem('notifications', JSON.stringify(notifications));
+        window.location.reload();
+    }
+}
   </script>
 </body>
 </html>
