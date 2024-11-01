@@ -4,8 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Index -Mart Computers Nesswo</title>
- <title>Mart Infotech - Empowering Tech Solutions</title>
+  <title>Mart Infotech - Empowering Tech Solutions</title>
   
   <!-- **Meta Description** (~160 characters, enticing users to click through from SERPs) -->
   <meta name="description" content="Discover innovative tech solutions with Mart Infotech. Explore our expertise in Web Development, App Creation, IT Education, and more, tailored to empower your digital journey.">
@@ -67,25 +66,33 @@
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
 
-        <!-- Admin buttons container -->
-        <div id="adminButtonsContainer" class="admin-buttons" style="display: none;">
-            <a class="btn-getstarted" href="add-notification.html">
-                <i class="bi bi-plus-circle me-2"></i>Add
-            </a>
-            <a class="btn-getstarted" href="#" onclick="manageNotifications(); return false;">
-                <i class="bi bi-gear me-2"></i>Manage
-            </a>
-            <a class="btn-getstarted" href="#" onclick="logout(); return false;">
-                <i class="bi bi-box-arrow-right me-2"></i>Logout
-            </a>
-        </div>
+       <!-- Dropdown container -->
+       <!-- Dropdown container for Admin Buttons -->
+<div id="adminButtonsContainer" class="admin-buttons" style="display: none;">
+  <button class="btn btn-getstarted dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-three-dots me-2"></i>Actions
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" href="add-notification.html">
+          <i class="bi bi-plus-circle me-2"></i>Add
+      </a>
+      <a class="dropdown-item" href="#" onclick="manageNotifications(); return false;">
+          <i class="bi bi-gear me-2"></i>Manage
+      </a>
+      <a class="dropdown-item" href="#" onclick="logout(); return false;">
+          <i class="bi bi-box-arrow-right me-2"></i>Logout
+      </a>
+  </ul>
+</div>
 
-        <!-- Regular Get Started button (shown when not admin) -->
-        <div id="regularButtonContainer">
-            <a class="btn-getstarted" href="index.html#contact">
-                <i class="bi bi-arrow-right me-2"></i>Get Started
-            </a>
-        </div>
+<!-- Regular Get Started button (shown when not admin) -->
+<div id="regularButtonContainer">
+  <a class="btn-getstarted" href="index.html#contact">
+      <i class="bi bi-arrow-right me-2"></i>Get Started
+  </a>
+</div>
+
+<!-- Assuming.mobile-nav-toggle is already defined in your HTML for mobile menu toggle -->
     </div>
 </header>
 
@@ -726,32 +733,38 @@
         });
     }
 
-    // Admin System
-    const isAdmin = localStorage.getItem('adminLoggedIn') === 'true';
-    
-    // Show/hide appropriate buttons
-    const adminButtonsContainer = document.getElementById('adminButtonsContainer');
-    const regularButtonContainer = document.getElementById('regularButtonContainer');
-    
-    if (adminButtonsContainer && regularButtonContainer) {
-        if (isAdmin) {
-            adminButtonsContainer.style.display = 'flex';
-            regularButtonContainer.style.display = 'none';
-        } else {
-            adminButtonsContainer.style.display = 'none';
-            regularButtonContainer.style.display = 'block';
-        }
-    }
+   // Admin System
+const isAdmin = localStorage.getItem('adminLoggedIn') === 'true';
 
-    // Mobile menu toggle for admin buttons
-    const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
-    if (mobileNavToggle) {
-        mobileNavToggle.addEventListener('click', function() {
-            if (isAdmin && adminButtonsContainer) {
-                adminButtonsContainer.classList.toggle('show');
-            }
-        });
+// Show/hide appropriate buttons
+const adminButtonsContainer = document.getElementById('adminButtonsContainer');
+const regularButtonContainer = document.getElementById('regularButtonContainer');
+
+if (adminButtonsContainer && regularButtonContainer) {
+    if (isAdmin) {
+        adminButtonsContainer.style.display = 'flex'; // Note: You might want to adjust this to match your desired layout
+        regularButtonContainer.style.display = 'none';
+    } else {
+        adminButtonsContainer.style.display = 'none';
+        regularButtonContainer.style.display = 'block';
     }
+}
+
+// Mobile menu toggle for admin buttons - MODIFIED TO TOGGLE CLASS FOR FLEX DISPLAY
+const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+if (mobileNavToggle) {
+    mobileNavToggle.addEventListener('click', function() {
+        if (isAdmin && adminButtonsContainer) {
+            // Toggle a class to handle display (e.g., 'how' class sets display to flex)
+            adminButtonsContainer.classList.toggle('show');
+            // Optionally, toggle the dropdown menu itself if needed
+            const dropdownMenu = adminButtonsContainer.querySelector('.dropdown-menu');
+            if (dropdownMenu) {
+                dropdownMenu.classList.toggle('show');
+            }
+        }
+    });
+}
 
     // Style for the footer newsletter section
     const footerNewsletter = document.querySelector('.footer-newsletter');
