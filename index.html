@@ -670,6 +670,23 @@
 </script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+    // Firebase initialization
+    const firebaseConfig = {
+        apiKey: "AIzaSyDM0ajInNWMVQOfEk-oydUeAysdFYSYino",
+        authDomain: "projectjarvis-f32e8.firebaseapp.com",
+        databaseURL: "https://projectjarvis-f32e8-default-rtdb.firebaseio.com",
+        projectId: "projectjarvis-f32e8",
+        storageBucket: "projectjarvis-f32e8.appspot.com",
+        messagingSenderId: "866258040052",
+        appId: "1:866258040052:web:0a2eda45e797c9f8719aa1",
+        measurementId: "G-990M1EF19R"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const analytics = firebase.analytics();
+
     // Contact Form Handling
     var form = document.getElementById('contact-form');
     var submitButton = form.querySelector('button[type="submit"]');
@@ -733,38 +750,36 @@
         });
     }
 
-   // Admin System
-const isAdmin = localStorage.getItem('adminLoggedIn') === 'true';
+    // Admin System
+    const isAdmin = localStorage.getItem('adminLoggedIn') === 'true';
 
-// Show/hide appropriate buttons
-const adminButtonsContainer = document.getElementById('adminButtonsContainer');
-const regularButtonContainer = document.getElementById('regularButtonContainer');
+    // Show/hide appropriate buttons
+    const adminButtonsContainer = document.getElementById('adminButtonsContainer');
+    const regularButtonContainer = document.getElementById('regularButtonContainer');
 
-if (adminButtonsContainer && regularButtonContainer) {
-    if (isAdmin) {
-        adminButtonsContainer.style.display = 'flex'; // Note: You might want to adjust this to match your desired layout
-        regularButtonContainer.style.display = 'none';
-    } else {
-        adminButtonsContainer.style.display = 'none';
-        regularButtonContainer.style.display = 'block';
-    }
-}
-
-// Mobile menu toggle for admin buttons - MODIFIED TO TOGGLE CLASS FOR FLEX DISPLAY
-const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
-if (mobileNavToggle) {
-    mobileNavToggle.addEventListener('click', function() {
-        if (isAdmin && adminButtonsContainer) {
-            // Toggle a class to handle display (e.g., 'how' class sets display to flex)
-            adminButtonsContainer.classList.toggle('show');
-            // Optionally, toggle the dropdown menu itself if needed
-            const dropdownMenu = adminButtonsContainer.querySelector('.dropdown-menu');
-            if (dropdownMenu) {
-                dropdownMenu.classList.toggle('show');
-            }
+    if (adminButtonsContainer && regularButtonContainer) {
+        if (isAdmin) {
+            adminButtonsContainer.style.display = 'flex';
+            regularButtonContainer.style.display = 'none';
+        } else {
+            adminButtonsContainer.style.display = 'none';
+            regularButtonContainer.style.display = 'block';
         }
-    });
-}
+    }
+
+    // Mobile menu toggle for admin buttons
+    const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+    if (mobileNavToggle) {
+        mobileNavToggle.addEventListener('click', function() {
+            if (isAdmin && adminButtonsContainer) {
+                adminButtonsContainer.classList.toggle('show');
+                const dropdownMenu = adminButtonsContainer.querySelector('.dropdown-menu');
+                if (dropdownMenu) {
+                    dropdownMenu.classList.toggle('show');
+                }
+            }
+        });
+    }
 
     // Style for the footer newsletter section
     const footerNewsletter = document.querySelector('.footer-newsletter');
@@ -782,68 +797,77 @@ if (mobileNavToggle) {
         }
     });
 
-    // Notification System
-    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+    // Notification System with Firebase
     const notificationsContainer = document.getElementById('notifications-container');
     
     if (notificationsContainer) {
-        // Add margin to create space between admin button and notifications
         notificationsContainer.style.marginTop = '2rem';
         
-        if (notifications.length > 0) {
-            const notificationList = document.createElement('div');
-            notificationList.className = 'notification-list';
-            notificationList.style.maxHeight = '300px'; // Increased height
-            notificationList.style.overflowY = 'auto';
-            notificationList.style.border = '1px solid #dee2e6';
-            notificationList.style.borderRadius = '0.25rem';
-            notificationList.style.backgroundColor = '#ffffff';
-            
-            // Add a heading for notifications
-            const notificationHeading = document.createElement('div');
-            notificationHeading.className = 'notification-heading p-2 border-bottom';
-            notificationHeading.style.backgroundColor = '#f8f9fa';
-            notificationHeading.innerHTML = '<h5 class="mb-0">Latest Updates</h5>';
-            notificationList.appendChild(notificationHeading);
-            
-            notifications.forEach((notification, index) => {
-                const notificationItem = document.createElement('div');
-                notificationItem.className = 'notification-item p-3 border-bottom';
-                notificationItem.style.cursor = 'pointer';
-                notificationItem.style.transition = 'background-color 0.3s';
-                notificationItem.style.backgroundColor = '#ffffff';
-                notificationItem.innerHTML = `
-                    <h6 class="mb-1 text-primary">${notification.title}</h6>
-                    <small class="text-muted">Click to view details</small>
-                `;
-                
-                // Hover effect
-                notificationItem.addEventListener('mouseenter', () => {
-                    notificationItem.style.backgroundColor = '#f8f9fa';
+        // Listen for notifications from Firebase
+        const notificationsRef = database.ref('notifications');
+        notificationsRef.on('value', (snapshot) => {
+            const notifications = [];
+            snapshot.forEach((childSnapshot) => {
+                notifications.push({
+                    id: childSnapshot.key,
+                    ...childSnapshot.val()
                 });
-                
-                notificationItem.addEventListener('mouseleave', () => {
-                    notificationItem.style.backgroundColor = '#ffffff';
-                });
-                
-                // Click handler to show detailed dialog
-                notificationItem.addEventListener('click', () => {
-                    showNotificationDialog(notification);
-                });
-                
-                notificationList.appendChild(notificationItem);
             });
             
-            notificationsContainer.appendChild(notificationList);
-        } else {
-            const emptyState = document.createElement('div');
-            emptyState.className = 'text-center p-3 bg-light rounded';
-            emptyState.style.marginTop = '1rem';
-            emptyState.innerHTML = `
-                <p class="text-muted mb-0">No notifications available</p>
-            `;
-            notificationsContainer.appendChild(emptyState);
-        }
+            notificationsContainer.innerHTML = ''; // Clear existing notifications
+            
+            if (notifications.length > 0) {
+                const notificationList = document.createElement('div');
+                notificationList.className = 'notification-list';
+                notificationList.style.maxHeight = '300px';
+                notificationList.style.overflowY = 'auto';
+                notificationList.style.border = '1px solid #dee2e6';
+                notificationList.style.borderRadius = '0.25rem';
+                notificationList.style.backgroundColor = '#ffffff';
+                
+                const notificationHeading = document.createElement('div');
+                notificationHeading.className = 'notification-heading p-2 border-bottom';
+                notificationHeading.style.backgroundColor = '#f8f9fa';
+                notificationHeading.innerHTML = '<h5 class="mb-0">Latest Updates</h5>';
+                notificationList.appendChild(notificationHeading);
+                
+                notifications.forEach((notification) => {
+                    const notificationItem = document.createElement('div');
+                    notificationItem.className = 'notification-item p-3 border-bottom';
+                    notificationItem.style.cursor = 'pointer';
+                    notificationItem.style.transition = 'background-color 0.3s';
+                    notificationItem.style.backgroundColor = '#ffffff';
+                    notificationItem.innerHTML = `
+                        <h6 class="mb-1 text-primary">${notification.title}</h6>
+                        <small class="text-muted">Click to view details</small>
+                    `;
+                    
+                    notificationItem.addEventListener('mouseenter', () => {
+                        notificationItem.style.backgroundColor = '#f8f9fa';
+                    });
+                    
+                    notificationItem.addEventListener('mouseleave', () => {
+                        notificationItem.style.backgroundColor = '#ffffff';
+                    });
+                    
+                    notificationItem.addEventListener('click', () => {
+                        showNotificationDialog(notification);
+                    });
+                    
+                    notificationList.appendChild(notificationItem);
+                });
+                
+                notificationsContainer.appendChild(notificationList);
+            } else {
+                const emptyState = document.createElement('div');
+                emptyState.className = 'text-center p-3 bg-light rounded';
+                emptyState.style.marginTop = '1rem';
+                emptyState.innerHTML = `
+                    <p class="text-muted mb-0">No notifications available</p>
+                `;
+                notificationsContainer.appendChild(emptyState);
+            }
+        });
     }
 });
 
@@ -897,7 +921,6 @@ function showNotificationDialog(notification) {
     overlay.appendChild(dialog);
     document.body.appendChild(overlay);
 
-    // Add animation styles if not already present
     if (!document.querySelector('#notification-animations')) {
         const style = document.createElement('style');
         style.id = 'notification-animations';
@@ -918,7 +941,6 @@ function logout() {
 }
 
 function manageNotifications() {
-    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
     const container = document.createElement('div');
     container.style.position = 'fixed';
     container.style.top = '50%';
@@ -934,40 +956,59 @@ function manageNotifications() {
     container.style.maxWidth = '600px';
     container.style.borderRadius = '0.25rem';
 
-    let html = `
-        <h3>Manage Notifications</h3>
-        <div style="max-height: 60vh; overflow-y: auto;">
-    `;
+    // Get notifications from Firebase
+    const database = firebase.database();
+    const notificationsRef = database.ref('notifications');
     
-    if (notifications.length === 0) {
-        html += '<p>No notifications found.</p>';
-    } else {
-        notifications.forEach((notification, index) => {
-            html += `
-                <div style="border-bottom: 1px solid #dee2e6; padding: 10px; margin-bottom: 10px;">
-                    <h4>${notification.title}</h4>
-                    <p>${notification.description}</p>
-                    <button class="btn btn-danger btn-sm" onclick="deleteNotification(${index})">Delete</button>
-                </div>
-            `;
+    notificationsRef.once('value').then((snapshot) => {
+        const notifications = [];
+        snapshot.forEach((childSnapshot) => {
+            notifications.push({
+                id: childSnapshot.key,
+                ...childSnapshot.val()
+            });
         });
-    }
-    
-    html += `
-        </div>
-        <button class="btn btn-secondary mt-3" onclick="this.parentElement.remove()">Close</button>
-    `;
 
-    container.innerHTML = html;
-    document.body.appendChild(container);
+        let html = `
+            <h3>Manage Notifications</h3>
+            <div style="max-height: 60vh; overflow-y: auto;">
+        `;
+        
+        if (notifications.length === 0) {
+            html += '<p>No notifications found.</p>';
+        } else {
+            notifications.forEach((notification) => {
+                html += `
+                    <div style="border-bottom: 1px solid #dee2e6; padding: 10px; margin-bottom: 10px;">
+                        <h4>${notification.title}</h4>
+                        <p>${notification.description}</p>
+                        <button class="btn btn-danger btn-sm" onclick="deleteNotification('${notification.id}')">Delete</button>
+                    </div>
+                `;
+            });
+        }
+        
+        html += `
+            </div>
+            <button class="btn btn-secondary mt-3" onclick="this.parentElement.remove()">Close</button>
+        `;
+
+        container.innerHTML = html;
+        document.body.appendChild(container);
+    });
 }
 
-function deleteNotification(index) {
+function deleteNotification(notificationId) {
     if (confirm('Are you sure you want to delete this notification?')) {
-        const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
-        notifications.splice(index, 1);
-        localStorage.setItem('notifications', JSON.stringify(notifications));
-        window.location.reload();
+        const database = firebase.database();
+        database.ref('notifications').child(notificationId).remove()
+            .then(() => {
+                window.location.reload();
+            })
+            .catch((error) => {
+                console.error("Error deleting notification:", error);
+                alert('Error deleting notification. Please try again.');
+            });
     }
 }
   </script>
