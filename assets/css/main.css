@@ -2047,3 +2047,59 @@ section,
   z-index: 1002;
   display: none;
 }
+/* Add these styles to your CSS */
+.header {
+    padding: 15px 0;
+    z-index: 997;
+}
+
+.header .mobile-nav-toggle {
+    position: relative;
+    z-index: 998;
+    margin-left: 20px;
+}
+
+/* Ensure admin buttons container doesn't conflict with mobile nav */
+#adminButtonsContainer {
+    position: relative;
+    z-index: 996;
+}
+
+/* Mobile menu adjustments */
+@media (max-width: 991px) {
+    .header .navmenu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        max-width: 300px;
+        height: 100vh;
+        padding: 70px 20px;
+        background: #fff;
+        transition: 0.3s;
+        z-index: 997;
+        overflow-y: auto;
+    }
+    
+    .header .navmenu.show {
+        right: 0;
+    }
+    
+    .mobile-nav-toggle {
+        position: fixed;
+        right: 15px;
+        top: 15px;
+    }
+    
+    #adminButtonsContainer {
+        position: absolute;
+        right: 60px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .sitename {
+        font-size: 1.2rem;
+        margin-right: 60px;
+    }
+}
