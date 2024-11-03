@@ -2,6 +2,198 @@
 <html lang="en">
 
 <head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+  }
+  
+  body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+  }
+  
+  .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 15px;
+  }
+  
+  .controls-section {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      border-radius: 8px;
+      flex-wrap: wrap;
+      gap: 10px;
+  }
+  
+  .controls-section h2 {
+      margin-bottom: 0;
+      font-size: clamp(1.2rem, 2vw, 1.5rem);
+  }
+  
+  .notifications {
+      display: grid;
+      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  
+  .notification-card {
+      background-color: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.2s;
+  }
+  
+  .notification-card:hover {
+      background-color: #f8f9fa;
+      transform: translateY(-2px);
+  }
+  
+  .notification-content {
+      flex-grow: 1;
+      margin-right: 0;
+  }
+  
+  .notification-title {
+      font-size: clamp(1rem, 1.5vw, 1.2rem);
+      font-weight: bold;
+      color: #333;
+      word-break: break-word;
+  }
+  
+  .timestamp {
+      font-size: 0.8em;
+      color: #666;
+      margin-top: 5px;
+  }
+  
+  .delete-btn {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+      cursor: pointer;
+      align-self: flex-end;
+      font-size: 0.9em;
+  }
+  
+  .delete-btn:hover {
+      background-color: #c82333;
+  }
+  
+  /* Dialog Styles */
+  .dialog-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+  }
+  
+  .dialog {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: min(90%, 600px);
+      z-index: 1001;
+  }
+  
+  .dialog-title {
+      font-size: clamp(1.2rem, 2vw, 1.5rem);
+      margin-bottom: 15px;
+      color: #333;
+      padding-right: 30px;
+  }
+  
+  .dialog-description {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      font-size: clamp(0.9rem, 1.5vw, 1rem);
+  }
+  
+  .dialog-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 1.5em;
+      cursor: pointer;
+      color: #666;
+      padding: 5px;
+  }
+  
+  .dialog-close:hover {
+      color: #333;
+  }
+  
+  /* Media Queries */
+  @media screen and (max-width: 768px) {
+      .controls-section {
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 12px;
+      }
+      
+      .controls-section > div {
+          width: 100%;
+          margin-top: 10px;
+      }
+      
+      #adminControls {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          margin-top: 10px;
+      }
+      
+      .btn {
+          width: 100%;
+          text-align: center;
+      }
+  }
+  
+  @media screen and (max-width: 480px) {
+      .container {
+          padding: 10px;
+      }
+      
+      .notification-card {
+          padding: 12px;
+      }
+      
+      .dialog {
+          padding: 15px;
+      }
+      
+      .dialog-title {
+          font-size: 1.2rem;
+      }
+  }
+</style>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>Mart Infotech - Empowering Tech Solutions</title>
@@ -48,53 +240,30 @@
 
 <body class="index-page">
 
-  <header id="header" class="header d-flex align-items-center fixed-top">
+  <header id="header" class="header d-flex align-items-center sticky-top">
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
-        <a href="index.html" class="logo d-flex align-items-center me-auto">
-            <i class="bi bi-pc-display-horizontal fs-1 me-2"></i>
-            <h1 class="sitename">Mart Infotech Computers(Proxy)</h1>
-        </a>
-        <nav id="navmenu" class="navmenu">
-            <ul>
-                <li><a href="index.html#hero" class="active">Home</a></li>
-                <li><a href="index.html#about">About</a></li>
-                <li><a href="index.html#features">Features</a></li>
-                <li><a href="index.html#courses">Courses</a></li>
-                <li><a href="index.html#notifications">Notifications</a></li>
-                <li><a href="index.html#contact">Contact</a></li>
-            </ul>
-            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-        </nav>
 
-       <!-- Dropdown container -->
-       <!-- Dropdown container for Admin Buttons -->
-<div id="adminButtonsContainer" class="admin-buttons" style="display: none;">
-  <button class="btn btn-getstarted dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-      <i class="bi bi-arrow-down"></i>
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      <a class="dropdown-item" href="add-notification.html">
-          <i class="bi bi-plus-circle me-2"></i>Add
+      <a href="index.html" class="logo d-flex align-items-center me-auto">
+        <i class="bi bi-pc-display-horizontal fs-1 me-2"></i>
+        <h1 class="sitename">Mart Infotech Computers(Proxy)</h1>
       </a>
-      <a class="dropdown-item" href="#" onclick="manageNotifications(); return false;">
-          <i class="bi bi-gear me-2"></i>Manage
-      </a>
-      <a class="dropdown-item" href="#" onclick="logout(); return false;">
-          <i class="bi bi-box-arrow-right me-2"></i>Logout
-      </a>
-  </ul>
-</div>
 
-<!-- Regular Get Started button (shown when not admin) -->
-<div id="regularButtonContainer">
-  <a class="btn-getstarted" href="index.html#contact">
-      <i class="bi bi-arrow-right me-2"></i>
-  </a>
-</div>
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html#hero">Home</a></li>
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="index.html#features">Features</a></li>
+          <li><a href="index.html#courses">Courses</a></li>
+          <li><a href="index.html#container">Notifications</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
 
-<!-- Assuming.mobile-nav-toggle is already defined in your HTML for mobile menu toggle -->
+      <a class="btn-getstarted" href="index.html#contact">Get Started</a>
+
     </div>
-</header>
+  </header>
 
 
   <main class="main">
@@ -620,15 +789,29 @@
           </ul>
         </div>
 
-        <div id="notifications" class="col-lg-4 col-md-12 footer-newsletter">
-          <div class="d-flex flex-column">
-              <a href="admin-login.html" class="btn btn-primary align-self-start">Admin Login</a>
-              <div id="notifications-container"></div>
+        <div class="container" id="container">
+          <section class="controls-section">
+              <h2>Latest Updates</h2>
+              <div>
+                  <button id="adminLoginBtn" class="btn btn-success me-2" onclick="window.location.href='login.html'">
+                      <i class="bi bi-person-circle"></i> Admin Login
+                  </button>
+                  <div id="adminControls" class="d-none">
+                      <a href="add-notification.html" class="btn btn-primary me-2">
+                          <i class="bi bi-plus-circle"></i> Add Notification
+                      </a>
+                      <button class="btn btn-danger" onclick="logout()">
+                          <i class="bi bi-box-arrow-right"></i> Logout
+                      </button>
+                  </div>
+              </div>
+          </section>
+          <div class="notifications" id="notificationsList">
+              <!-- Notifications will be displayed here -->
           </div>
       </div>
-
-      </div>
-    </div>
+  
+      
 
     <div class="container copyright text-center mt-4">
       <p>© <span>Copyright</span> <strong class="px-1 sitename">Proxy Computers</strong><span>All Rights Reserved</span></p>
@@ -663,6 +846,7 @@
 <script src="assets/js/main.js"></script>
 <!-- Add this near the bottom of your HTML file, just before the closing </body> tag -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.4/dist/umd/supabase.min.js"></script>
 <script type="text/javascript">
 (function() {
   emailjs.init("v6wzxzFtZ3-IdEiDu");
@@ -671,60 +855,59 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // Contact Form Handling
-    var form = document.getElementById('contact-form');
-    var submitButton = form.querySelector('button[type="submit"]');
-    var loading = form.querySelector('.loading');
-    var errorMessage = form.querySelector('.error-message');
-    var sentMessage = form.querySelector('.sent-message');
-    
-    function validateForm() {
-        var inputs = form.querySelectorAll('input[required], textarea[required]');
-        var isValid = true;
-        inputs.forEach(function(input) {
-            if (!input.value.trim()) {
-                isValid = false;
-                input.classList.add('is-invalid');
-            } else {
-                input.classList.remove('is-invalid');
+    const form = document.getElementById('contact-form');
+    if (form) {
+        const submitButton = form.querySelector('button[type="submit"]');
+        const loading = form.querySelector('.loading');
+        const errorMessage = form.querySelector('.error-message');
+        const sentMessage = form.querySelector('.sent-message');
+
+        function validateForm() {
+            const inputs = form.querySelectorAll('input[required], textarea[required]');
+            let isValid = true;
+            inputs.forEach((input) => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.classList.add('is-invalid');
+                } else {
+                    input.classList.remove('is-invalid');
+                }
+            });
+            return isValid;
+        }
+
+        function sendEmail(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!validateForm()) {
+                errorMessage.textContent = 'Please fill in all required fields.';
+                errorMessage.style.display = 'block';
+                return false;
             }
-        });
-        return isValid;
-    }
-    
-    function sendEmail(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!validateForm()) {
-            errorMessage.textContent = 'Please fill in all required fields.';
-            errorMessage.style.display = 'block';
+            loading.style.display = 'block';
+            errorMessage.style.display = 'none';
+            sentMessage.style.display = 'none';
+            emailjs.sendForm('service_ct960cy', 'template_lg2sv5q', form)
+                .then(() => {
+                    loading.style.display = 'none';
+                    sentMessage.style.display = 'block';
+                    form.reset();
+                }, (error) => {
+                    loading.style.display = 'none';
+                    errorMessage.textContent = `Oops! ${error.text}`;
+                    errorMessage.style.display = 'block';
+                });
             return false;
         }
-        loading.style.display = 'block';
-        errorMessage.style.display = 'none';
-        sentMessage.style.display = 'none';
-        emailjs.sendForm('service_ct960cy', 'template_lg2sv5q', form)
-            .then(function() {
-                loading.style.display = 'none';
-                sentMessage.style.display = 'block';
-                form.reset();
-            }, function(error) {
-                loading.style.display = 'none';
-                errorMessage.textContent = 'Oops! ' + error.text;
-                errorMessage.style.display = 'block';
-            });
-        return false;
-    }
-    
-    // Form event listeners
-    if (form) {
+
         form.addEventListener('submit', sendEmail);
         submitButton.addEventListener('click', sendEmail);
     }
-    
+
     // WhatsApp functionality
     const whatsappLink = document.getElementById('whatsapp-link');
     if (whatsappLink) {
-        whatsappLink.addEventListener('click', function(e) {
+        whatsappLink.addEventListener('click', (e) => {
             e.preventDefault();
             const phoneNumber = "9419503369";
             const businessName = "Mart Infotech Computers(Proxy Computers)";
@@ -733,243 +916,235 @@
         });
     }
 
-   // Admin System
-const isAdmin = localStorage.getItem('adminLoggedIn') === 'true';
-
-// Show/hide appropriate buttons
-const adminButtonsContainer = document.getElementById('adminButtonsContainer');
-const regularButtonContainer = document.getElementById('regularButtonContainer');
-
-if (adminButtonsContainer && regularButtonContainer) {
-    if (isAdmin) {
-        adminButtonsContainer.style.display = 'flex'; // Note: You might want to adjust this to match your desired layout
-        regularButtonContainer.style.display = 'none';
-    } else {
-        adminButtonsContainer.style.display = 'none';
-        regularButtonContainer.style.display = 'block';
-    }
-}
-
-// Mobile menu toggle for admin buttons - MODIFIED TO TOGGLE CLASS FOR FLEX DISPLAY
-const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
-if (mobileNavToggle) {
-    mobileNavToggle.addEventListener('click', function() {
-        if (isAdmin && adminButtonsContainer) {
-            // Toggle a class to handle display (e.g., 'how' class sets display to flex)
-            adminButtonsContainer.classList.toggle('show');
-            // Optionally, toggle the dropdown menu itself if needed
-            const dropdownMenu = adminButtonsContainer.querySelector('.dropdown-menu');
-            if (dropdownMenu) {
-                dropdownMenu.classList.toggle('show');
-            }
-        }
-    });
-}
-
-    // Style for the footer newsletter section
+    // Footer newsletter styling
     const footerNewsletter = document.querySelector('.footer-newsletter');
     if (footerNewsletter) {
         footerNewsletter.style.display = 'flex';
         footerNewsletter.style.flexDirection = 'column';
         footerNewsletter.style.gap = '1rem';
+
+        // Remove extra spans
+        const extraSpans = document.querySelectorAll('.footer-newsletter span');
+        extraSpans.forEach((span) => {
+            if (!span.textContent.trim()) {
+                span.remove();
+            }
+        });
     }
 
-    // Remove extra spans
-    const extraSpans = document.querySelectorAll('.footer-newsletter span');
-    extraSpans.forEach(span => {
-        if (!span.textContent.trim()) {
-            span.remove();
+    // Supabase Configuration
+    const SUPABASE_URL = 'https://dfbqeudkvurnwqaedwpy.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnFldWRrdnVybndxYWVkd3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA1NTI5MjcsImV4cCI6MjA0NjEyODkyN30.XGci41s1tNmZFVkbHpYSBkFl3HNomRhBvA33RRsEAZU';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let isAdmin = false;
+
+    // Initial auth check and notifications load
+    window.addEventListener('load', async () => {
+        try {
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            if (error) throw error;
+            isAdmin = !!session;
+            updateUIForAuthStatus(session);
+            await loadNotifications();
+        } catch (error) {
+            console.error('Authentication error:', error.message);
         }
     });
 
-    // Notification System
-    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
-    const notificationsContainer = document.getElementById('notifications-container');
-    
-    if (notificationsContainer) {
-        // Add margin to create space between admin button and notifications
-        notificationsContainer.style.marginTop = '2rem';
-        
-        if (notifications.length > 0) {
-            const notificationList = document.createElement('div');
-            notificationList.className = 'notification-list';
-            notificationList.style.maxHeight = '300px'; // Increased height
-            notificationList.style.overflowY = 'auto';
-            notificationList.style.border = '1px solid #dee2e6';
-            notificationList.style.borderRadius = '0.25rem';
-            notificationList.style.backgroundColor = '#ffffff';
-            
-            // Add a heading for notifications
-            const notificationHeading = document.createElement('div');
-            notificationHeading.className = 'notification-heading p-2 border-bottom';
-            notificationHeading.style.backgroundColor = '#f8f9fa';
-            notificationHeading.innerHTML = '<h5 class="mb-0">Latest Updates</h5>';
-            notificationList.appendChild(notificationHeading);
-            
-            notifications.forEach((notification, index) => {
-                const notificationItem = document.createElement('div');
-                notificationItem.className = 'notification-item p-3 border-bottom';
-                notificationItem.style.cursor = 'pointer';
-                notificationItem.style.transition = 'background-color 0.3s';
-                notificationItem.style.backgroundColor = '#ffffff';
-                notificationItem.innerHTML = `
-                    <h6 class="mb-1 text-primary">${notification.title}</h6>
-                    <small class="text-muted">Click to view details</small>
-                `;
-                
-                // Hover effect
-                notificationItem.addEventListener('mouseenter', () => {
-                    notificationItem.style.backgroundColor = '#f8f9fa';
-                });
-                
-                notificationItem.addEventListener('mouseleave', () => {
-                    notificationItem.style.backgroundColor = '#ffffff';
-                });
-                
-                // Click handler to show detailed dialog
-                notificationItem.addEventListener('click', () => {
-                    showNotificationDialog(notification);
-                });
-                
-                notificationList.appendChild(notificationItem);
-            });
-            
-            notificationsContainer.appendChild(notificationList);
-        } else {
-            const emptyState = document.createElement('div');
-            emptyState.className = 'text-center p-3 bg-light rounded';
-            emptyState.style.marginTop = '1rem';
-            emptyState.innerHTML = `
-                <p class="text-muted mb-0">No notifications available</p>
-            `;
-            notificationsContainer.appendChild(emptyState);
-        }
+    // Create and append dialog elements
+    // Create and append dialog elements
+const dialogOverlay = document.createElement('div');
+dialogOverlay.id = 'dialogOverlay';
+dialogOverlay.className = 'dialog-overlay';
+dialogOverlay.style.display = 'none';
+dialogOverlay.innerHTML = `
+    <div class="dialog-content">
+        <h3 id="dialogTitle"></h3>
+        <p id="dialogDescription"></p>
+        <button onclick="closeDialog()" class="btn btn-primary">Close</button>
+    </div>
+`;
+document.body.appendChild(dialogOverlay);
+
+// Add styles
+const styles = document.createElement('style');
+styles.textContent = `
+    .dialog-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .dialog-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+`;
+document.head.appendChild(styles);
+
+// Dialog functions
+window.showDialog = function(title, description) {
+    if (!title || !description) return;
+    document.getElementById('dialogTitle').textContent = title;
+    document.getElementById('dialogDescription').textContent = description;
+    dialogOverlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeDialog = function() {
+    dialogOverlay.style.display = 'none';
+    document.body.style.overflow = 'auto';
+};
+
+// Close dialog when clicking outside
+dialogOverlay.addEventListener('click', function(e) {
+    if (e.target === dialogOverlay) {
+        closeDialog();
     }
 });
 
-// Notification Dialog Function
-function showNotificationDialog(notification) {
-    const overlay = document.createElement('div');
-    overlay.style.position = 'fixed';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.width = '100%';
-    overlay.style.height = '100%';
-    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    overlay.style.display = 'flex';
-    overlay.style.justifyContent = 'center';
-    overlay.style.alignItems = 'center';
-    overlay.style.zIndex = '1000';
+    // Load notifications function
+    async function loadNotifications() {
+        try {
+            const { data, error } = await supabaseClient
+                .from('notifications')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-    const dialog = document.createElement('div');
-    dialog.className = 'notification-dialog bg-white rounded p-4';
-    dialog.style.width = '90%';
-    dialog.style.maxWidth = '500px';
-    dialog.style.maxHeight = '80vh';
-    dialog.style.overflowY = 'auto';
-    dialog.style.position = 'relative';
-    dialog.style.animation = 'fadeIn 0.3s';
+            if (error) throw error;
 
-    dialog.innerHTML = `
-        <div class="d-flex justify-content-between align-items-start mb-3">
-            <h4 class="text-primary mb-0">${notification.title}</h4>
-            <button type="button" class="btn-close" aria-label="Close"></button>
-        </div>
-        <div class="notification-content">
-            <p>${notification.description}</p>
-            ${notification.link !== '#' ? 
-                `<a href="${notification.link}" class="btn btn-primary btn-sm">Learn More</a>` : 
-                ''}
-        </div>
-    `;
+            const notificationsList = document.getElementById('notificationsList');
+            notificationsList.innerHTML = '';
 
-    const closeButton = dialog.querySelector('.btn-close');
-    closeButton.addEventListener('click', () => {
-        overlay.remove();
-    });
-
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-            overlay.remove();
-        }
-    });
-
-    overlay.appendChild(dialog);
-    document.body.appendChild(overlay);
-
-    // Add animation styles if not already present
-    if (!document.querySelector('#notification-animations')) {
-        const style = document.createElement('style');
-        style.id = 'notification-animations';
-        style.textContent = `
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(-20px); }
-                to { opacity: 1; transform: translateY(0); }
+            if (data.length === 0) {
+                notificationsList.innerHTML = '<p class="text-center text-muted p-4">No notifications available</p>';
+                return;
             }
-        `;
-        document.head.appendChild(style);
+
+            data.forEach(notification => {
+                const div = document.createElement('div');
+                div.className = 'notification-card';
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'notification-content';
+                contentDiv.innerHTML = `
+                    <div class="notification-title">${notification.title}</div>
+                    <div class="timestamp">${new Date(notification.created_at).toLocaleString()}</div>
+                `;
+                
+                contentDiv.onclick = (e) => {
+                    e.stopPropagation();
+                    if (notification.title && notification.description) {
+                        showDialog(notification.title, notification.description);
+                    }
+                };
+                
+                div.appendChild(contentDiv);
+
+                if (isAdmin) {
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'delete-btn';
+                    deleteBtn.innerHTML = '<i class="bi bi-trash"></i>';
+                    deleteBtn.onclick = async (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        await deleteNotification(notification.id);
+                    };
+                    div.appendChild(deleteBtn);
+                }
+
+                notificationsList.appendChild(div);
+            });
+        } catch (error) {
+            console.error('Error loading notifications:', error.message);
+            const notificationsList = document.getElementById('notificationsList');
+            notificationsList.innerHTML = '<p class="text-center text-danger p-4">Error loading notifications</p>';
+        }
     }
-}
 
-// Admin Functions
-function logout() {
-    localStorage.removeItem('adminLoggedIn');
-    window.location.reload();
-}
+    // Delete notification function
+    async function deleteNotification(id) {
+        try {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                alert('Please login as admin to delete notifications');
+                return;
+            }
 
-function manageNotifications() {
-    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
-    const container = document.createElement('div');
-    container.style.position = 'fixed';
-    container.style.top = '50%';
-    container.style.left = '50%';
-    container.style.transform = 'translate(-50%, -50%)';
-    container.style.backgroundColor = 'white';
-    container.style.padding = '20px';
-    container.style.boxShadow = '0 0 10px rgba(0,0,0,0.1)';
-    container.style.maxHeight = '80vh';
-    container.style.overflow = 'auto';
-    container.style.zIndex = '1001';
-    container.style.width = '80%';
-    container.style.maxWidth = '600px';
-    container.style.borderRadius = '0.25rem';
+            if (!confirm('Are you sure you want to delete this notification?')) return;
 
-    let html = `
-        <h3>Manage Notifications</h3>
-        <div style="max-height: 60vh; overflow-y: auto;">
-    `;
-    
-    if (notifications.length === 0) {
-        html += '<p>No notifications found.</p>';
-    } else {
-        notifications.forEach((notification, index) => {
-            html += `
-                <div style="border-bottom: 1px solid #dee2e6; padding: 10px; margin-bottom: 10px;">
-                    <h4>${notification.title}</h4>
-                    <p>${notification.description}</p>
-                    <button class="btn btn-danger btn-sm" onclick="deleteNotification(${index})">Delete</button>
-                </div>
-            `;
-        });
+            const { error: deleteError } = await supabaseClient
+                .from('notifications')
+                .delete()
+                .eq('id', id);
+
+            if (deleteError) throw deleteError;
+
+            await loadNotifications();
+            alert('Notification deleted successfully');
+        } catch (error) {
+            console.error('Error deleting notification:', error);
+            alert(`Error deleting notification: ${error.message}`);
+        }
     }
-    
-    html += `
-        </div>
-        <button class="btn btn-secondary mt-3" onclick="this.parentElement.remove()">Close</button>
-    `;
 
-    container.innerHTML = html;
-    document.body.appendChild(container);
-}
-
-function deleteNotification(index) {
-    if (confirm('Are you sure you want to delete this notification?')) {
-        const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
-        notifications.splice(index, 1);
-        localStorage.setItem('notifications', JSON.stringify(notifications));
-        window.location.reload();
+    // Update UI based on auth status
+    function updateUIForAuthStatus(user) {
+        const adminControls = document.getElementById('adminControls');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        
+        if (user) {
+            isAdmin = true;
+            adminControls.classList.remove('d-none');
+            adminLoginBtn.classList.add('d-none');
+        } else {
+            isAdmin = false;
+            adminControls.classList.add('d-none');
+            adminLoginBtn.classList.remove('d-none');
+        }
     }
-}
-  </script>
+
+    // Logout function
+    window.logout = async function() {
+        try {
+            const { error } = await supabaseClient.auth.signOut();
+            if (error) {
+                console.error('Logout error:', error.message);
+                alert(`Error logging out: ${error.message}`);
+                return;
+            }
+            isAdmin = false;
+            updateUIForAuthStatus(null);
+            window.location.reload();
+        } catch (err) {
+            console.error('Unexpected error during logout:', err.message);
+            alert(`Unexpected error logging out: ${err.message}`);
+        }
+    };
+
+    // Auth state change listener
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+        const user = session?.user;
+        updateUIForAuthStatus(user);
+    });
+});
+</script>
 </body>
 </html>
