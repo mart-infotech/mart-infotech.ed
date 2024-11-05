@@ -54,20 +54,35 @@
         </style>
     </head>
 <body>
-    <div class="loading">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
-
+   
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+       
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                Mart Infotech Computers
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                
+Mart Infotech Computers(Proxy)
             </a>
         </div>
     </nav>
-
+<!-- Add this right after the navbar, before the tabs -->
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="input-group">
+                <input type="text" class="form-control" id="searchRegistration" 
+                       placeholder="Search by Registration Number">
+                <button class="btn btn-primary" type="button" id="searchButton">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6 text-end">
+            <div class="alert alert-info mb-0">
+                Total Students Enrolled: <span id="totalStudents">0</span>
+            </div>
+        </div>
+    </div>
+</div>
     <div class="container mt-4">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
@@ -136,6 +151,26 @@
                             <input type="file" class="form-control" name="photo" accept="image/*" required>
                             <img id="photoPreview" class="mt-2 preview-image d-none">
                         </div>
+                   
+<div class="col-md-6">
+    <label class="form-label required-field">Contact Number</label>
+    <input type="tel" class="form-control" name="contact_number" 
+           pattern="[0-9]{10}" title="Please enter a valid 10-digit number" required>
+</div>
+
+<div class="col-md-6">
+    <label class="form-label required-field">Matriculation Certificate (100KB-200KB)</label>
+    <input type="file" class="form-control" name="matriculation_certificate" 
+           accept="image/*" required>
+    <img id="certPreview" class="mt-2 preview-image d-none">
+</div>
+
+<div class="col-md-6">
+    <label class="form-label required-field">Signature (25KB-50KB)</label>
+    <input type="file" class="form-control" name="signature" 
+           accept="image/*" required>
+    <img id="signPreview" class="mt-2 preview-image d-none">
+</div>
                         <div class="col-12">
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-save"></i> Register Student
@@ -186,12 +221,20 @@
                             <table class="table">
                                 <tbody>
                                     <tr>
+                                        <th>Registration Number</th>
+                                        <td id="detailsRegistrationNumber"></td>
+                                    </tr>
+                                    <tr>
                                         <th>Name</th>
                                         <td id="detailsName"></td>
                                     </tr>
                                     <tr>
                                         <th>Parentage</th>
                                         <td id="detailsParentage"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Contact Number</th>
+                                        <td id="detailsContactNumber"></td>
                                     </tr>
                                     <tr>
                                         <th>Date of Birth</th>
@@ -221,6 +264,22 @@
                                         <th>Graduation Details</th>
                                         <td id="detailsGraduation"></td>
                                     </tr>
+                                    <tr>
+                                        <th>Matriculation Certificate</th>
+                                        <td>
+                                            <img id="detailsMatriculationCertificateUrl" 
+                                                 class="img-fluid rounded student-photo" 
+                                                 alt="Matriculation Certificate">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Signature</th>
+                                        <td>
+                                            <img id="detailsSignatureUrl" 
+                                                 class="img-fluid rounded student-photo" 
+                                                 alt="Signature">
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -239,209 +298,572 @@
             </div>
         </div>
     </div>
-    <a href="index.html" class="back-link">← Back to Home</a>
+    <footer id="footer" class="footer position-relative light-background">
+
+      
+           
+      
+          </div>
+        </div>
+      
+        <!-- Scroll Top -->
+        <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+        <div class="container copyright text-center mt-4">
+          <p>© <span>Copyright</span> <strong class="px-1 sitename">Proxy Computers</strong><span>All Rights Reserved</span></p>
+          <div class="credits">
+            <!-- All the links in the footer should remain intact. -->
+            <!-- You can delete the links only if you've purchased the pro version. -->
+            <!-- Licensing information: https://bootstrapmade.com/license/ -->
+            <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+            Designed by <a href="index.html">Mart Infotech</a>
+          </div>
+        </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
    
     <script>
 
-        const SUPABASE_URL = 'https://dfbqeudkvurnwqaedwpy.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnFldWRrdnVybndxYWVkd3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA1NTI5MjcsImV4cCI6MjA0NjEyODkyN30.XGci41s1tNmZFVkbHpYSBkFl3HNomRhBvA33RRsEAZU';
-        const { createClient } = supabase;
-        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
-    
-        const showLoading = () => document.querySelector('.loading').style.display = 'flex';
-        const hideLoading = () => document.querySelector('.loading').style.display = 'none';
-    
-        // Format date to DD/MM/YYYY
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
+       // Initialize Supabase client
+const SUPABASE_URL = 'https://dfbqeudkvurnwqaedwpy.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnFldWRrdnVybndxYWVkd3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA1NTI5MjcsImV4cCI6MjA0NjEyODkyN30.XGci41s1tNmZFVkbHpYSBkFl3HNomRhBvA33RRsEAZU';
+const { createClient } = supabase;
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Utility functions
+const showLoading = () => document.querySelector('.loading').style.display = 'flex';
+const hideLoading = () => document.querySelector('.loading').style.display = 'none';
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
+
+function getPhotoUrl(photoPath) {
+    if (!photoPath) return '/api/placeholder/200/200';
+    return `${SUPABASE_URL}/storage/v1/object/public/student-photos/${photoPath}`;
+}
+
+// New utility functions for enhanced functionality
+function generateRegistrationNumber(course) {
+    const prefix = course.substring(0, 4).toUpperCase();
+    const random = Math.floor(Math.random() * 100000).toString().padStart(5, '0');
+    return `${prefix}${random}`;
+}
+
+function validateFileSize(file, minSize, maxSize) {
+    const fileSize = file.size / 1024; // Convert to KB
+    return fileSize >= minSize && fileSize <= maxSize;
+}
+
+async function updateTotalStudents() {
+    try {
+        const { count, error } = await supabaseClient
+            .from('students')
+            .select('*', { count: 'exact' });
+
+        if (error) throw error;
+        document.getElementById('totalStudents').textContent = count;
+    } catch (error) {
+        console.error('Error getting total count:', error);
+    }
+}
+
+// Main functionality
+async function loadStudents() {
+    showLoading();
+    try {
+        const { data, error } = await supabaseClient
+            .from('students')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        const container = document.getElementById('studentsContainer');
+        container.innerHTML = '';
+
+        if (!data || data.length === 0) {
+            container.innerHTML = `
+                <div class="col-12 text-center">
+                    <p class="text-muted">No students registered yet.</p>
+                </div>
+            `;
+            return;
         }
 
-       // Helper function to get photo URL
-       function getPhotoUrl(photoPath) {
-        if (!photoPath) return '/api/placeholder/200/200';
-        return `${SUPABASE_URL}/storage/v1/object/public/student-photos/${photoPath}`;
-    }
-
-    // Update the loadStudents function with proper photo handling
-    async function loadStudents() {
-        showLoading();
-        try {
-            const { data, error } = await supabaseClient
-                .from('students')
-                .select('*')
-                .order('created_at', { ascending: false });
-    
-            if (error) throw error;
-    
-            const container = document.getElementById('studentsContainer');
-            container.innerHTML = '';
-    
-            if (!data || data.length === 0) {
-                container.innerHTML = `
-                    <div class="col-12 text-center">
-                        <p class="text-muted">No students registered yet.</p>
-                    </div>
-                `;
-                return;
-            }
-    
-            data.forEach(student => {
-                const photoUrl = student.photo_url 
-                    ? `${SUPABASE_URL}/storage/v1/object/public/student-photos/${student.photo_url}`
-                    : 'https://via.placeholder.com/200x200?text=No+Photo';
-        
-                const card = document.createElement('div');
-                card.className = 'col-md-6 col-lg-4 mb-4';
-                card.innerHTML = `
-    <div class="card student-card h-100" style="cursor: pointer;" data-student-id="${student.id}">
-        <img src="${photoUrl}" 
-             class="student-photo" 
-             alt="${student.name}'s Photo"
-             onerror="this.src='https://via.placeholder.com/200x200?text=No+Photo'">
-        <div class="card-body">
-            <h5 class="card-title">${student.name}</h5>
-            <p class="card-text">
-                <strong>Course:</strong> ${student.course}
-
-                <strong>Parentage:</strong> ${student.parentage}
-
-                <strong>DOB:</strong> ${formatDate(student.dob)}
-
-                <strong>Aadhaar:</strong> ${student.aadhaar}
-
-                <strong>10th Roll:</strong> ${student.tenth_roll}
-            </p>
-            <div class="d-flex justify-content-between mt-2">
-                <button class="btn btn-primary btn-sm edit-btn" data-student-id="${student.id}">
-                    <i class="bi bi-pencil"></i> Edit
-                </button>
-                <!-- DELETE BUTTON REMOVED FROM HERE -->
-            </div>
-        </div>
-    </div>
-`;
-                
-                container.appendChild(card);
-        
-                // Add click event for the entire card
-                const studentCard = card.querySelector('.student-card');
-                studentCard.addEventListener('click', (e) => {
-                    // Prevent triggering when clicking edit or delete buttons
-                    if (!e.target.closest('.btn')) {
-                        showStudentDetails(student.id);
-                    }
-                });
-            });
-        
-            // Add event listeners for edit and delete buttons in the details modal
-            document.querySelector('.edit-from-details').addEventListener('click', (e) => {
-                const modal = bootstrap.Modal.getInstance(document.getElementById('viewDetailsModal'));
-                modal.hide();
-                editStudent(e.target.dataset.studentId);
-            });
-        
-            document.querySelector('.delete-from-details').addEventListener('click', (e) => {
-                const modal = bootstrap.Modal.getInstance(document.getElementById('viewDetailsModal'));
-                modal.hide();
-                deleteStudent(e.target.dataset.studentId);
-            });
-        
-    
-        } catch (error) {
-            console.error('Error loading students:', error);
-            alert('Error loading students: ' + error.message);
-        } finally {
-            hideLoading();
-        }
-    }
-    async function showStudentDetails(id) {
-        showLoading();
-        try {
-            const { data: student, error } = await supabaseClient
-                .from('students')
-                .select('*')
-                .eq('id', id)
-                .single();
-    
-            if (error) throw error;
-    
-            // Set photo
+        data.forEach(student => {
             const photoUrl = student.photo_url 
                 ? `${SUPABASE_URL}/storage/v1/object/public/student-photos/${student.photo_url}`
                 : 'https://via.placeholder.com/200x200?text=No+Photo';
-            document.getElementById('detailsPhoto').src = photoUrl;
     
-            // Set all other details
-            document.getElementById('detailsName').textContent = student.name;
-            document.getElementById('detailsParentage').textContent = student.parentage;
-            document.getElementById('detailsDob').textContent = formatDate(student.dob);
-            document.getElementById('detailsAddress').textContent = student.address;
-            document.getElementById('detailsCourse').textContent = student.course;
-            document.getElementById('detailsAadhaar').textContent = student.aadhaar;
-            document.getElementById('detailsTenthRoll').textContent = student.tenth_roll;
-            document.getElementById('detailsTwelfthRoll').textContent = student.twelfth_roll || 'Not provided';
-            document.getElementById('detailsGraduation').textContent = student.graduation || 'Not provided';
+            const card = document.createElement('div');
+            card.className = 'col-md-6 col-lg-4 mb-4';
+            card.innerHTML = `
+                <div class="card student-card h-100" style="cursor: pointer;" data-student-id="${student.id}">
+                    <img src="${photoUrl}" 
+                         class="student-photo" 
+                         alt="${student.name}'s Photo"
+                         onerror="this.src='https://via.placeholder.com/200x200?text=No+Photo'">
+                    <div class="card-body">
+                        <h5 class="card-title">${student.name}</h5>
+                        <p class="card-text">
+                            <strong>Registration:</strong> ${student.registration_number || 'N/A'}<br>
+                            <strong>Course:</strong> ${student.course}<br>
+                            <strong>Contact:</strong> ${student.contact_number || 'N/A'}<br>
+                            <strong>Parentage:</strong> ${student.parentage}<br>
+                            <strong>DOB:</strong> ${formatDate(student.dob)}
+                        </p>
+                        <div class="d-flex justify-content-between mt-2">
+                            <button class="btn btn-primary btn-sm edit-btn" data-student-id="${student.id}">
+                                <i class="bi bi-pencil"></i> Edit
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            
+            container.appendChild(card);
     
-            // Set student ID for edit and delete buttons
-            document.querySelector('.edit-from-details').dataset.studentId = id;
-            document.querySelector('.delete-from-details').dataset.studentId = id;
+            const studentCard = card.querySelector('.student-card');
+            studentCard.addEventListener('click', (e) => {
+                if (!e.target.closest('.btn')) {
+                    showStudentDetails(student.id);
+                }
+            });
+        });
     
-            // Show the modal
-            const modal = new bootstrap.Modal(document.getElementById('viewDetailsModal'));
-            modal.show();
+        document.querySelector('.edit-from-details').addEventListener('click', (e) => {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('viewDetailsModal'));
+            modal.hide();
+            editStudent(e.target.dataset.studentId);
+        });
     
-        } catch (error) {
-            console.error('Error loading student details:', error);
-            alert('Error loading student details: ' + error.message);
-        } finally {
-            hideLoading();
-        }
-    }
-    
-        // Add the delete student function
-        async function deleteStudent(id) {
-            if (!confirm('Are you sure you want to delete this student? This action cannot be undone.')) {
-                return;
-            }
+        document.querySelector('.delete-from-details').addEventListener('click', (e) => {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('viewDetailsModal'));
+            modal.hide();
+            deleteStudent(e.target.dataset.studentId);
+        });
 
+    } catch (error) {
+        console.error('Error loading students:', error);
+        alert('Error loading students: ' + error.message);
+    } finally {
+        hideLoading();
+    }
+}
+
+// Event Listeners
+document.getElementById('searchButton').addEventListener('click', async () => {
+    const searchTerm = document.getElementById('searchRegistration').value;
+    if (!searchTerm) {
+        await loadStudents();
+        return;
+    }
+
+    showLoading();
+    try {
+        const { data, error } = await supabaseClient
+            .from('students')
+            .select('*')
+            .ilike('registration_number', `%${searchTerm}%`);
+
+        if (error) throw error;
+        
+        const container = document.getElementById('studentsContainer');
+        container.innerHTML = '';
+        
+        if (data.length === 0) {
+            container.innerHTML = '<div class="col-12"><div class="alert alert-info">No students found.</div></div>';
+            return;
+        }
+
+        data.forEach(student => {
+            const photoUrl = student.photo_url 
+                ? `${SUPABASE_URL}/storage/v1/object/public/student-photos/${student.photo_url}`
+                : 'https://via.placeholder.com/200x200?text=No+Photo';
+    
+            const card = document.createElement('div');
+            card.className = 'col-md-6 col-lg-4 mb-4';
+            card.innerHTML = `
+                <div class="card student-card h-100" style="cursor: pointer;" data-student-id="${student.id}">
+                    <img src="${photoUrl}" 
+                         class="student-photo" 
+                         alt="${student.name}'s Photo"
+                         onerror="this.src='https://via.placeholder.com/200x200?text=No+Photo'">
+                    <div class="card-body">
+                        <h5 class="card-title">${student.name}</h5>
+                        <p class="card-text">
+                            <strong>Registration:</strong> ${student.registration_number || 'N/A'}<br>
+                            <strong>Course:</strong> ${student.course}<br>
+                            <strong>Contact:</strong> ${student.contact_number || 'N/A'}<br>
+                            <strong>Parentage:</strong> ${student.parentage}<br>
+                            <strong>DOB:</strong> ${formatDate(student.dob)}
+                        </p>
+                        <div class="d-flex justify-content-between mt-2">
+                            <button class="btn btn-primary btn-sm edit-btn" data-student-id="${student.id}">
+                                <i class="bi bi-pencil"></i> Edit
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            
+            container.appendChild(card);
+    
+            const studentCard = card.querySelector('.student-card');
+            studentCard.addEventListener('click', (e) => {
+                if (!e.target.closest('.btn')) {
+                    showStudentDetails(student.id);
+                }
+            });
+        });
+    } catch (error) {
+        console.error('Error searching:', error);
+        alert('Error searching: ' + error.message);
+    } finally {
+        hideLoading();
+    }
+});
+
+// Modified form submission handler
+document.getElementById('studentForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    showLoading();
+
+    try {
+        const formData = new FormData(this);
+        
+        // Validate file sizes
+        const matriculationFile = formData.get('matriculation_certificate');
+        const signatureFile = formData.get('signature');
+        const profileFile = formData.get('photo');
+
+        if (!validateFileSize(matriculationFile, 100, 200)) {
+            throw new Error('Matriculation certificate must be between 100KB and 200KB');
+        }
+        if (!validateFileSize(signatureFile, 25, 50)) {
+            throw new Error('Signature must be between 25KB and 50KB');
+        }
+        if (!validateFileSize(profileFile, 100, 200)) {
+            throw new Error('Profile photo must be between 100KB and 200KB');
+        }
+
+        // Upload all files
+        const uploads = await Promise.all([
+            supabaseClient.storage.from('student-photos').upload(`${Date.now()}-profile-${profileFile.name}`, profileFile),
+            supabaseClient.storage.from('student-photos').upload(`${Date.now()}-cert-${matriculationFile.name}`, matriculationFile),
+            supabaseClient.storage.from('student-photos').upload(`${Date.now()}-sign-${signatureFile.name}`, signatureFile)
+        ]);
+
+        // Generate registration number
+        const registrationNumber = generateRegistrationNumber(formData.get('course'));
+
+        const studentData = {
+            name: formData.get('name'),
+            parentage: formData.get('parentage'),
+            dob: formData.get('dob'),
+            address: formData.get('address'),
+            contact_number: formData.get('contact_number'),
+            aadhaar: formData.get('aadhaar'),
+            tenth_roll: formData.get('tenth_roll'),
+            twelfth_roll: formData.get('twelfth_roll') || null,
+            graduation: formData.get('graduation') || null,
+            course: formData.get('course'),
+            registration_number: registrationNumber,
+            photo_url: uploads[0].data.path,
+            matriculation_certificate_url: uploads[1].data.path,
+            signature_url: uploads[2].data.path,
+            created_at: new Date().toISOString()
+        };
+
+        const { error } = await supabaseClient
+            .from('students')
+            .insert([studentData]);
+
+        if (error) throw error;
+
+        alert(`Student registered successfully! Registration Number: ${registrationNumber}`);
+        this.reset();
+        document.getElementById('photoPreview').classList.add('d-none');
+        document.getElementById('certPreview').classList.add('d-none');
+        document.getElementById('signPreview').classList.add('d-none');
+        
+        await updateTotalStudents();
+        
+        const viewTab = document.getElementById('view-tab');
+        const tab = new bootstrap.Tab(viewTab);
+        tab.show();
+        await loadStudents();
+
+    } catch (error) {
+        console.error('Error registering student:', error);
+        alert('Error: ' + error.message);
+    } finally {
+        hideLoading();
+    }
+});
+
+// File preview handlers
+['photo', 'matriculation_certificate', 'signature'].forEach(inputName => {
+    document.querySelector(`input[name="${inputName}"]`).addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewId = inputName === 'photo' ? 'photoPreview' : 
+                                inputName === 'matriculation_certificate' ? 'certPreview' : 'signPreview';
+                const preview = document.getElementById(previewId);
+                preview.src = e.target.result;
+                preview.classList.remove('d-none');
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    updateTotalStudents();
+    if (document.getElementById('view-tab').classList.contains('active')) {
+        loadStudents();
+    }
+});
+
+document.getElementById('view-tab').addEventListener('click', loadStudents);
+
+ // Updated function to show student details in modal
+ async function showStudentDetails(studentId) {
+    showLoading();
+    try {
+        const { data: student, error } = await supabaseClient
+            .from('students')
+            .select('*')
+            .eq('id', studentId)
+            .single();
+
+        if (error) throw error;
+
+        // Update modal content
+        document.getElementById('detailsPhoto').src = getPhotoUrl(student.photo_url);
+        document.getElementById('detailsName').textContent = student.name;
+        document.getElementById('detailsParentage').textContent = student.parentage;
+        document.getElementById('detailsDob').textContent = formatDate(student.dob);
+        document.getElementById('detailsAddress').textContent = student.address;
+        document.getElementById('detailsCourse').textContent = student.course;
+        document.getElementById('detailsAadhaar').textContent = student.aadhaar;
+        document.getElementById('detailsTenthRoll').textContent = student.tenth_roll;
+        document.getElementById('detailsTwelfthRoll').textContent = student.twelfth_roll || 'N/A';
+        document.getElementById('detailsGraduation').textContent = student.graduation || 'N/A';
+        document.getElementById('detailsRegistrationNumber').textContent = student.registration_number || 'N/A';
+        document.getElementById('detailsMatriculationCertificateUrl').src = getPhotoUrl(student.matriculation_certificate_url);
+        document.getElementById('detailsSignatureUrl').src = getPhotoUrl(student.signature_url);
+        document.getElementById('detailsContactNumber').textContent = student.contact_number || 'N/A';
+
+        // Set student ID for edit and delete buttons
+        document.querySelector('.edit-from-details').dataset.studentId = studentId;
+        document.querySelector('.delete-from-details').dataset.studentId = studentId;
+
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('viewDetailsModal'));
+        modal.show();
+    } catch (error) {
+        console.error('Error loading student details:', error);
+        alert('Error loading student details: ' + error.message);
+    } finally {
+        hideLoading();
+    }
+}
+
+// Function to edit student
+async function editStudent(studentId) {
+    showLoading();
+    try {
+        const { data: student, error } = await supabaseClient
+            .from('students')
+            .select('*')
+            .eq('id', studentId)
+            .single();
+
+        if (error) throw error;
+
+        // Populate edit form
+        const editForm = document.getElementById('editForm');
+        editForm.innerHTML = `
+            <input type="hidden" name="id" value="${student.id}">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label required-field">Student Name</label>
+                    <input type="text" class="form-control" name="name" value="${student.name}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label required-field">Parentage</label>
+                    <input type="text" class="form-control" name="parentage" value="${student.parentage}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label required-field">Date of Birth</label>
+                    <input type="date" class="form-control" name="dob" value="${student.dob}" required>
+                </div>
+                <div class="col-12">
+                    <label class="form-label required-field">Address</label>
+                    <textarea class="form-control" name="address" required>${student.address}</textarea>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label required-field">Contact Number</label>
+                    <input type="tel" class="form-control" name="contact_number" value="${student.contact_number}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label required-field">Aadhaar Number</label>
+                    <input type="text" class="form-control" name="aadhaar" value="${student.aadhaar}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label required-field">Course</label>
+                    <select class="form-select" name="course" required>
+                        ${['CCC', 'ADCA', 'FASHION_DESIGNING', 'URDU_DIPLOMA', 'ARABIC_DIPLOMA', 'TALLY']
+                            .map(c => `<option value="${c}" ${student.course === c ? 'selected' : ''}>${c}</option>`)
+                            .join('')}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">10th Roll Number</label>
+                    <input type="text" class="form-control" name="tenth_roll" value="${student.tenth_roll}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">12th Roll Number</label>
+                    <input type="text" class="form-control" name="twelfth_roll" value="${student.twelfth_roll || ''}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Graduation Details</label>
+                    <input type="text" class="form-control" name="graduation" value="${student.graduation || ''}">
+                </div>
+                <div class="col-md-6">
+                            <label class="form-label">Matriculation Certificate</label>
+                            <input type="file" class="form-control" name="matriculation_certificate" 
+                                   accept="image/*">
+                            <img id="certPreview" class="mt-2 preview-image d-none" 
+                                 src="${getPhotoUrl(student.matriculation_certificate_url)}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Signature</label>
+                            <input type="file" class="form-control" name="signature" 
+                                   accept="image/*">
+                            <img id="signPreview" class="mt-2 preview-image d-none"
+                                 src="${getPhotoUrl(student.signature_url)}">
+                        </div>
+                        <div class="col-12 mt-3">
+                            <button type="submit" class="btn btn-primary">Update Student</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                `;
+
+                // Add submit handler for edit form
+                editForm.onsubmit = async (e) => {
+                    e.preventDefault();
+                    showLoading();
+                    
+                    try {
+                        const formData = new FormData(editForm);
+                        const updates = {
+                            name: formData.get('name'),
+                            parentage: formData.get('parentage'),
+                            dob: formData.get('dob'),
+                            address: formData.get('address'),
+                            contact_number: formData.get('contact_number'),
+                            aadhaar: formData.get('aadhaar'),
+                            course: formData.get('course'),
+                            // Add updated photo fields
+                            matriculation_certificate_url: formData.get('matriculation_certificate') 
+                                ? (await supabaseClient.storage.from('student-photos').upload(`${Date.now()}-cert-${formData.get('matriculation_certificate').name}`, formData.get('matriculation_certificate'))).data.path
+                                : student.matriculation_certificate_url,
+                            signature_url: formData.get('signature')
+                                ? (await supabaseClient.storage.from('student-photos').upload(`${Date.now()}-sign-${formData.get('signature').name}`, formData.get('signature'))).data.path
+                                : student.signature_url
+                        };
+
+                        const { error } = await supabaseClient
+                            .from('students')
+                            .update(updates)
+                            .eq('id', studentId);
+
+                        if (error) throw error;
+
+                        alert('Student updated successfully!');
+                        bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+                        loadStudents();
+                    } catch (error) {
+                        console.error('Error updating student:', error);
+                        alert('Error updating student: ' + error.message);
+                    } finally {
+                        hideLoading();
+                    }
+                };
+
+                // Show edit modal
+                const modal = new bootstrap.Modal(document.getElementById('editModal'));
+                modal.show();
+            } catch (error) {
+                console.error('Error loading student for edit:', error);
+                alert('Error loading student for edit: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+               
+        async function deleteStudent(studentId) {
+            if (!confirm('Are you sure you want to delete this student?')) return;
+            
             showLoading();
+            
             try {
-                // First get the student data to check for photo
+                // Fetch the student record to get file paths
                 const { data: student, error: fetchError } = await supabaseClient
                     .from('students')
-                    .select('photo_url')
-                    .eq('id', id)
+                    .select('photo_url, matriculation_certificate_url, signature_url')
+                    .eq('id', studentId)
                     .single();
-
+                
                 if (fetchError) throw fetchError;
-
-                // Delete photo if exists
-                if (student.photo_url) {
-                    const { error: storageError } = await supabaseClient.storage
-                        .from('student-photos')
-                        .remove([student.photo_url]);
-
-                    if (storageError) throw storageError;
-                }
-
-                // Delete student record
+                
+                // Helper function to delete a single file
+                const deleteFile = async (filePath) => {
+                    if (!filePath) return;
+                    
+                    try {
+                        const { error } = await supabaseClient.storage
+                            .from('student-photos')
+                            .remove([filePath]);
+                            
+                        if (error) throw error;
+                        console.log(`Successfully deleted file: ${filePath}`);
+                    } catch (err) {
+                        console.warn(`Failed to delete file ${filePath}:`, err);
+                        // Continue execution even if file deletion fails
+                    }
+                };
+        
+                // Delete all associated files
+                await Promise.all([
+                    deleteFile(student.photo_url),
+                    deleteFile(student.matriculation_certificate_url),
+                    deleteFile(student.signature_url)
+                ]);
+                
+                // Delete the student record
                 const { error: deleteError } = await supabaseClient
                     .from('students')
                     .delete()
-                    .eq('id', id);
-
+                    .eq('id', studentId);
+                
                 if (deleteError) throw deleteError;
-
+                
                 alert('Student deleted successfully!');
+                
+                // Update UI
                 await loadStudents();
-
+                await updateTotalStudents();
+                
             } catch (error) {
                 console.error('Error deleting student:', error);
                 alert('Error deleting student: ' + error.message);
@@ -450,232 +872,14 @@
             }
         }
 
-        // Update the editStudent function to fix Aadhaar validation
-        async function editStudent(id) {
-            showLoading();
-            try {
-                const { data, error } = await supabaseClient
-                    .from('students')
-                    .select('*')
-                    .eq('id', id)
-                    .single();
-        
-                if (error) throw error;
-        
-                const editForm = document.getElementById('editForm');
-                editForm.innerHTML = `
-                    <input type="hidden" name="id" value="${data.id}">
-                    <div class="mb-3">
-                        <label class="form-label required-field">Student Name</label>
-                        <input type="text" class="form-control" name="name" value="${data.name}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label required-field">Parentage</label>
-                        <input type="text" class="form-control" name="parentage" value="${data.parentage}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label required-field">Date of Birth</label>
-                        <input type="date" class="form-control" name="dob" value="${data.dob}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label required-field">Address</label>
-                        <textarea class="form-control" name="address" required>${data.address}</textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label required-field">Aadhaar Number</label>
-                        <input type="text" class="form-control" name="aadhaar" value="${data.aadhaar}" 
-                               pattern="[0-9]{12}" title="Please enter exactly 12 digits" 
-                               maxlength="12" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label required-field">10th Roll Number</label>
-                        <input type="text" class="form-control" name="tenth_roll" value="${data.tenth_roll}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">12th Roll Number</label>
-                        <input type="text" class="form-control" name="twelfth_roll" value="${data.twelfth_roll || ''}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Graduation Details</label>
-                        <input type="text" class="form-control" name="graduation" value="${data.graduation || ''}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label required-field">Course</label>
-                        <select class="form-select" name="course" required>
-                            <option value="CCC" ${data.course === 'CCC' ? 'selected' : ''}>CCC</option>
-                            <option value="ADCA" ${data.course === 'ADCA' ? 'selected' : ''}>ADCA</option>
-                            <option value="FASHION_DESIGNING" ${data.course === 'FASHION_DESIGNING' ? 'selected' : ''}>Fashion Designing</option>
-                            <option value="URDU_DIPLOMA" ${data.course === 'URDU_DIPLOMA' ? 'selected' : ''}>Urdu Language Diploma</option>
-                            <option value="ARABIC_DIPLOMA" ${data.course === 'ARABIC_DIPLOMA' ? 'selected' : ''}>Arabic Language Diploma</option>
-                            <option value="TALLY" ${data.course === 'TALLY' ? 'selected' : ''}>Tally</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Update Photo</label>
-                        <input type="file" class="form-control" name="new_photo" accept="image/*">
-                        ${data.photo_url ? 
-                            `<img src="${SUPABASE_URL}/storage/v1/object/public/student-photos/${data.photo_url}" 
-                             class="mt-2 preview-image" alt="Current photo">` : 
-                            ''}
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                `;
-        
-                // Show modal
-                const modal = new bootstrap.Modal(document.getElementById('editModal'));
-                modal.show();
-        
-                // Handle edit form submission
-                editForm.onsubmit = async (e) => {
-                    e.preventDefault();
-                    showLoading();
-        
-                    try {
-                        const formData = new FormData(editForm);
-                        const updateData = {
-                            name: formData.get('name'),
-                            parentage: formData.get('parentage'),
-                            dob: formData.get('dob'),
-                            address: formData.get('address'),
-                            aadhaar: formData.get('aadhaar'),
-                            tenth_roll: formData.get('tenth_roll'),
-                            twelfth_roll: formData.get('twelfth_roll') || null,
-                            graduation: formData.get('graduation') || null,
-                            course: formData.get('course')
-                        };
-        
-                        // Handle new photo if uploaded
-                        const newPhoto = formData.get('new_photo');
-                        if (newPhoto.size > 0) {
-                            // Delete old photo if exists
-                            if (data.photo_url) {
-                                const { error: deleteError } = await supabaseClient.storage
-                                    .from('student-photos')
-                                    .remove([data.photo_url]);
-                                    
-                                if (deleteError) throw deleteError;
-                            }
-        
-                            // Upload new photo
-                            const photoName = `${Date.now()}-${newPhoto.name}`;
-                            const { data: photoData, error: photoError } = await supabaseClient.storage
-                                .from('student-photos')
-                                .upload(photoName, newPhoto);
-        
-                            if (photoError) throw photoError;
-                            updateData.photo_url = photoData.path;
-                        }
-        
-                        const { error: updateError } = await supabaseClient
-                            .from('students')
-                            .update(updateData)
-                            .eq('id', data.id);
-        
-                        if (updateError) throw updateError;
-        
-                        modal.hide();
-                        await loadStudents();
-                        alert('Student details updated successfully!');
-        
-                    } catch (error) {
-                        console.error('Error updating student:', error);
-                        alert('Error updating student: ' + error.message);
-                    } finally {
-                        hideLoading();
-                    }
-                };
-        
-            } catch (error) {
-                console.error('Error loading student for edit:', error);
-                alert('Error: ' + error.message);
-            } finally {
-                hideLoading();
-            }
-        }
-
-        document.getElementById('studentForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            showLoading();
-    
-            try {
-                const formData = new FormData(this);
-                const photoFile = formData.get('photo');
-                let photoPath = null;
-    
-                // Upload photo
-                if (photoFile.size > 0) {
-                    const photoName = `${Date.now()}-${photoFile.name}`;
-                    const { data: photoData, error: photoError } = await supabaseClient.storage
-                        .from('student-photos')
-                        .upload(photoName, photoFile);
-    
-                    if (photoError) throw photoError;
-                    photoPath = photoData.path;
-                }
-    
-                // Create student record
-                const studentData = {
-                    name: formData.get('name'),
-                    parentage: formData.get('parentage'),
-                    dob: formData.get('dob'),
-                    address: formData.get('address'),
-                    aadhaar: formData.get('aadhaar'),
-                    tenth_roll: formData.get('tenth_roll'),
-                    twelfth_roll: formData.get('twelfth_roll') || null,
-                    graduation: formData.get('graduation') || null,
-                    course: formData.get('course'),
-                    photo_url: photoPath,
-                    created_at: new Date().toISOString()
-                };
-    
-                const { error } = await supabaseClient
-                    .from('students')
-                    .insert([studentData]);
-    
-                if (error) throw error;
-
-                alert('Student registered successfully!');
-                this.reset();
-                document.getElementById('photoPreview').classList.add('d-none');
-                
-                // Switch to view tab and load students
-                const viewTab = document.getElementById('view-tab');
-                const tab = new bootstrap.Tab(viewTab);
-                tab.show();
-                await loadStudents();
-
-            } catch (error) {
-                console.error('Error registering student:', error);
-                alert('Error: ' + error.message);
-            } finally {
-                hideLoading();
-            }
-        });
-
-        // Preview uploaded photo in registration form
-        document.querySelector('input[name="photo"]').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const preview = document.getElementById('photoPreview');
-                    preview.src = e.target.result;
-                    preview.classList.remove('d-none');
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Load students when view tab is clicked
-        document.getElementById('view-tab').addEventListener('click', loadStudents);
-
-        // Initial load of students
-        document.addEventListener('DOMContentLoaded', () => {
-            // Load students if we're on the view tab
-            if (document.getElementById('view-tab').classList.contains('active')) {
-                loadStudents();
-            }
-        });
+// Event delegation for edit buttons
+document.getElementById('studentsContainer').addEventListener('click', (e) => {
+    const editBtn = e.target.closest('.edit-btn');
+    if (editBtn) {
+        e.stopPropagation();
+        editStudent(editBtn.dataset.studentId);
+    }
+});
     </script>
 </body>
 </html>
